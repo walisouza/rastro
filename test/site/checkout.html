@@ -1,0 +1,29 @@
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja Teste — Checkout</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif;color:#1b1b1f;background:#fafaf7}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 48px;background:#fff;border-bottom:1px solid #eee;position:sticky;top:0}
+nav a{margin-left:24px;color:#333;text-decoration:none}
+.hero{padding:96px 48px;background:linear-gradient(120deg,#ffe8d6,#ffd6e0)}
+.hero h1{font-size:56px;margin:0 0 16px;max-width:700px}
+.btn{display:inline-block;background:#1b1b1f;color:#fff;padding:16px 28px;border-radius:999px;text-decoration:none;border:0;font-size:16px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:64px 48px}
+.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 1px 3px #0001}
+.card .img{height:160px;border-radius:12px;background:#e9e4ff;margin-bottom:12px}
+.banner{margin:0 48px;padding:48px;border-radius:24px;background:#d9f2e6}
+.tall{height:900px;padding:48px}
+footer{padding:48px;background:#1b1b1f;color:#aaa}
+</style></head><body>
+<header><strong id="logo">LOJA TESTE</strong><nav><a href="/site/produto.html">Produtos</a><a href="#">Sobre</a><a href="#">Contato</a></nav></header>
+<section class="hero"><h1>Finalizar compra</h1><input placeholder="Seu e-mail" id="email"><p>Frete grátis acima de R$ 199.</p><a class="btn" id="cta" href="/site/produto.html">Ver coleção</a></section>
+<section class="grid">
+ <div class="card"><div class="img"></div><h3>Runner Pro</h3><p>R$ 499</p><button class="btn buy">Comprar</button></div>
+ <div class="card"><div class="img"></div><h3>Trail X</h3><p>R$ 599</p><button class="btn buy">Comprar</button></div>
+ <div class="card"><div class="img"></div><h3>Daily Fit</h3><p>R$ 349</p><button class="btn buy">Comprar</button></div>
+</section>
+<p style="padding:0 48px"><a class="btn" id="ticket" href="https://www.sympla.com.br/evento/teste-rastro">Comprar ingresso</a></p>
+<div class="banner"><h2>Cupom PRIMEIRA10</h2><p>Clique no banner (ele não faz nada — dead click).</p></div>
+<div class="tall"><h2>Sobre a marca</h2><p>Conteúdo longo para testar scroll.</p></div>
+<footer>© Loja Teste</footer>
+<script src="/t.js" data-key="__KEY__" defer></script>
+</body></html>

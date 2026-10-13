@@ -1,0 +1,33 @@
+{
+  "name": "rastro",
+  "version": "1.0.0",
+  "description": "Rastro — heatmaps, session replay e jornada do usuário",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/e2e.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "@netlify/blobs": "^11.1.4",
+    "@netlify/database": "^2.0.1",
+    "@rrweb/record": "^2.1.7",
+    "@rrweb/replay": "^2.1.7",
+    "d3-sankey": "^0.12.3",
+    "d3-shape": "^3.2.0",
+    "esbuild": "^0.28.2",
+    "fflate": "^0.8.3",
+    "pg": "^8.23.1",
+    "rrweb-player": "^2.1.7"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.9",
+    "playwright-core": "^1.64.0"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  }
+}
