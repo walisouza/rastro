@@ -74,6 +74,18 @@ export const ICON = {
   back: '<path d="M15 5l-7 7 7 7"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+  more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+  users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.2 3.2 0 0 1 0 6.3M21 20c0-2.6-1.6-4.9-4-5.7"/>',
+  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  exit: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>',
+  scroll: '<rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 7v4"/>',
+  pulse: '<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+  zap: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  bug: '<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M9 4l1.5 2M15 4l-1.5 2M3 12h4M17 12h4M4 18l3-2M20 18l-3-2"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',
+  refresh: '<path d="M20 11a8 8 0 0 0-14.7-4.4L3 9M4 13a8 8 0 0 0 14.7 4.4L21 15M3 4v5h5M21 20v-5h-5"/>',
 };
 export const icon = (k, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ''}</svg>`;
 export const devIcon = (d) => icon(d === 'mobile' ? 'mobile' : d === 'tablet' ? 'tablet' : 'desktop', 'dev-ico');
@@ -142,6 +154,8 @@ const NAV = [
   ['#', 'Comportamento'], ['heatmap', 'Mapa de calor'], ['journey', 'Jornada'], ['funnel', 'Funil'], ['sessions', 'Sessões'],
   ['#', 'Conta'], ['settings', 'Sites e instalação'],
 ];
+const TABS = [['overview', 'Início'], ['heatmap', 'Calor'], ['journey', 'Jornada'], ['sessions', 'Sessões']];
+const TITLES = { overview: 'Visão geral', pages: 'Páginas', heatmap: 'Mapa de calor', journey: 'Jornada', funnel: 'Funil', sessions: 'Sessões', session: 'Sessão', settings: 'Sites' };
 function renderShell() {
   document.getElementById('app').innerHTML = `
   <div class="shell">
@@ -151,16 +165,25 @@ function renderShell() {
       <div class="rail-foot"><button id="theme">Tema</button><button id="out">Sair</button></div>
     </aside>
     <div class="main">
+      <header class="appbar"><a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a><span class="appbar-t" id="appbar-t"></span><button class="ico-btn" id="m-theme" aria-label="Alternar tema">${icon('sun')}</button></header>
       <div class="topbar" id="topbar"></div>
       <main class="content" id="view"></main>
     </div>
+    <nav class="tabbar" aria-label="Navegação">${TABS.map(([k, l]) => `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`).join('')}<button id="m-more" data-k="more">${icon('more')}<span>Mais</span></button></nav>
+    <div class="sheet-bg" id="sheet" hidden><div class="sheet" role="dialog" aria-label="Mais opções"><i class="grab"></i>
+      ${[['pages', 'Páginas'], ['funnel', 'Funil'], ['settings', 'Sites e instalação']].map(([k, l]) => `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`).join('')}
+      <button id="s-theme">${icon('sun')}<span>Alternar tema</span></button><button id="s-out">${icon('exit')}<span>Sair</span></button></div></div>
   </div>`;
-  $('#out').onclick = logout;
-  $('#theme').onclick = () => {
+  const toggleTheme = () => {
     const dark = document.documentElement.dataset.theme !== 'light';
     document.documentElement.dataset.theme = dark ? 'light' : 'dark';
     store.set('theme', document.documentElement.dataset.theme);
   };
+  const sheet = $('#sheet');
+  $('#out').onclick = logout; $('#s-out').onclick = logout;
+  $('#theme').onclick = toggleTheme; $('#m-theme').onclick = toggleTheme; $('#s-theme').onclick = () => { toggleTheme(); sheet.hidden = true; };
+  $('#m-more').onclick = () => { sheet.hidden = false; };
+  sheet.onclick = (e) => { if (e.target === sheet || e.target.closest('a')) sheet.hidden = true; };
 }
 
 function renderTopbar(view) {
@@ -175,7 +198,7 @@ function renderTopbar(view) {
     <label class="toggle" title="Usa os agrupamentos de páginas definidos em Sites e instalação" ${hasGroups ? '' : 'hidden'}><input type="checkbox" id="f-grp" ${S.grouped ? 'checked' : ''}> Agrupar páginas</label>
     <div class="grow"></div>
     <div id="sync">${syncHtml}</div>
-    <button class="btn sm ghost" id="sync-b" title="Traz as visitas mais recentes para os relatórios">Atualizar dados</button>`;
+    <button class="btn sm ghost" id="sync-b" title="Traz as visitas mais recentes para os relatórios">${icon('refresh')}<span>Atualizar dados</span></button>`;
   $('#sync-b').onclick = () => syncData(true);
   $('#f-site').onchange = (e) => { S.siteId = e.target.value; store.set('site', S.siteId); loadGroupsCount().then(route); };
   $('#f-range').onchange = (e) => { S.range = e.target.value; store.set('range', S.range); route(); };
@@ -229,7 +252,9 @@ async function route() {
   const my = ++routeToken;
   hideTip();
   const { view, arg, q } = parseHash();
-  $$('.nav a').forEach((a) => a.classList.toggle('on', a.dataset.k === view || (view === 'session' && a.dataset.k === 'sessions')));
+  $$('.nav a, .tabbar a, .sheet a').forEach((a) => a.classList.toggle('on', a.dataset.k === view || (view === 'session' && a.dataset.k === 'sessions')));
+  const more = $('#m-more'); if (more) more.classList.toggle('on', ['pages', 'funnel', 'settings'].includes(view));
+  if ($('#appbar-t')) $('#appbar-t').textContent = TITLES[view] || '';
   renderTopbar(view);
   const el = $('#view');
   if (!S.sites.length && view !== 'settings') { go('#/settings'); return; }
@@ -321,6 +346,26 @@ function lineChart(series, bucket) {
     <line class="hov" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" visibility="hidden" vector-effect="non-scaling-stroke"/>
   </svg>`;
 }
+// versão celular: colunas arredondadas, agrupadas em até 8 barras
+function barChart(series, bucket) {
+  if (!series.length) return '';
+  const n = Math.min(8, series.length), per = Math.ceil(series.length / n);
+  const bins = [];
+  for (let i = 0; i < series.length; i += per) {
+    const g = series.slice(i, i + per);
+    bins.push({ b: g[0].b, e: g[g.length - 1].b, sessions: g.reduce((a, s) => a + s.sessions, 0), converted: g.reduce((a, s) => a + (s.converted || 0), 0) });
+  }
+  const max = Math.max(1, ...bins.map((x) => x.sessions));
+  const peak = bins.reduce((m, x, i) => (x.sessions > bins[m].sessions ? i : m), 0);
+  const lab = (x) => { const d = new Date(x.b); return bucket === 'hour' ? d.getHours() + 'h' : d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); };
+  return `<div class="mbars" data-mbars>${bins.map((x, i) => `<button class="mbar ${i === peak ? 'on' : ''}" data-i="${i}" aria-label="${lab(x)}: ${fmtInt(x.sessions)} sessões">
+    <span class="mbar-v">${fmtInt(x.sessions)}</span>
+    <span class="mbar-t"><i style="height:${Math.max(4, (x.sessions / max) * 100)}%"></i>${x.converted ? `<b style="height:${(x.converted / max) * 100}%"></b>` : ''}</span>
+    <span class="mbar-l">${lab(x)}</span></button>`).join('')}</div>`;
+}
+function bindBars(el) {
+  $$('[data-mbars] .mbar', el).forEach((b) => (b.onclick = () => { $$('.mbar', b.parentNode).forEach((x) => x.classList.toggle('on', x === b)); }));
+}
 function bindChart(el, series, bucket) {
   const svg = $('[data-chart]', el); if (!svg) return;
   const hov = $('.hov', svg);
@@ -337,6 +382,8 @@ function bindChart(el, series, bucket) {
   });
   svg.addEventListener('mouseleave', () => { hov.setAttribute('visibility', 'hidden'); hideTip(); });
 }
+
+const KPI_ICO = ['sessions', 'users', 'eye', 'target', 'clock', 'exit', 'scroll', 'pulse', 'zap', 'bug'];
 
 // ================================================================ visão geral
 async function renderOverview(el, alive) {
@@ -360,10 +407,10 @@ async function renderOverview(el, alive) {
     <div class="page-head"><div><h1>Visão geral</h1><p>${esc(site().name)}: como as pessoas chegam, quanto ficam e onde travam.</p></div>
       <a class="btn" href="#/sessions?frustration=1">${icon('sessions')} Ver sessões com frustração</a></div>
     ${k.sessions ? '' : `<div class="note" style="margin-bottom:16px">Ainda não chegou nenhuma sessão nesse período. Confira se o script está instalado no site em <a href="#/settings">Sites e instalação</a>.</div>`}
-    <section class="kpis">${K.map(([l, v, dl, help, bad]) => `<div class="kpi ${bad ? 'bad' : ''}" ${help ? `title="${esc(help)}"` : ''}><div class="kpi-l">${l}</div><div class="kpi-v">${v}${dl}</div></div>`).join('')}</section>
+    <section class="kpis">${K.map(([l, v, dl, help, bad], i) => `<div class="kpi ${bad ? 'bad' : ''}" ${help ? `title="${esc(help)}"` : ''}><span class="kpi-ico">${icon(KPI_ICO[i])}</span><div class="kpi-l">${l}</div><div class="kpi-v">${v}${dl}</div></div>`).join('')}</section>
     <section class="panel" style="margin-bottom:16px">
       <div class="panel-head"><h2>Sessões ao longo do tempo</h2><div class="legend"><span><i></i>Sessões</span><span><i class="l3"></i>Converteram</span><span><i class="l2"></i>Com frustração ou erro</span></div></div>
-      ${lineChart(d.series, d.bucket)}
+      <div class="only-d">${lineChart(d.series, d.bucket)}</div><div class="only-m">${barChart(d.series, d.bucket)}</div>
     </section>
     <div class="grid g3" style="margin-bottom:16px">
       <section class="panel"><div class="panel-head"><h2>Canais</h2></div>${barList(d.channels, { extra: (r) => `<span class="badge good" title="Conversão">${fmtPct(r.conv, 0)} conv.</span>` })}</section>
@@ -380,7 +427,7 @@ async function renderOverview(el, alive) {
         : '<div class="muted small">Nenhum erro registrado no período.</div>'}
       </section>
     </div>`;
-  bindChart(el, d.series, d.bucket);
+  bindChart(el, d.series, d.bucket); bindBars(el);
   $$('tr[data-page]', el).forEach((tr) => (tr.onclick = () => go('#/heatmap?page=' + encodeURIComponent(tr.dataset.page))));
 }
 
@@ -464,7 +511,7 @@ async function renderSessions(el, alive, q) {
     const box = $('#sess-box');
     if (!rows.length) { box.innerHTML = '<div class="empty"><h2>Nenhuma sessão com esses filtros</h2>Tente um período maior ou tire algum filtro.</div>'; return; }
     box.innerHTML = `<div class="panel-head"><h2>${fmtInt(total)} sessões</h2></div>
-      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Início</th><th>Duração</th><th>Páginas visitadas</th><th>Origem</th><th>Sinais</th><th></th></tr></thead><tbody>
+      <div class="tbl-wrap"><table class="tbl sess-tbl"><thead><tr><th>Início</th><th>Duração</th><th>Páginas visitadas</th><th>Origem</th><th>Sinais</th><th></th></tr></thead><tbody>
       ${rows.map((s) => `<tr class="click sess-row" data-id="${s.id}">
         <td><div>${fmtDate(s.started_at)}</div><div class="muted small">${devIcon(s.device)} ${esc(s.browser || '')}${s.is_new ? '' : ', recorrente'}</div></td>
         <td class="num">${fmtDur(s.duration_ms)}</td>
