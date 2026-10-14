@@ -14,35 +14,26 @@ Rastro é uma ferramenta própria de análise de experiência para os sites dos 
 - **Relatórios** de visão geral, canais, dispositivos, páginas de entrada, erros JS e um comparador de páginas.
 - **Agrupamento de páginas**: por exemplo, todos os `/produto/...` contam como "Produto".
 
-Tudo roda no Netlify:
+## Onde roda
 
 | Parte | Onde |
 |---|---|
-| Painel + script `t.js` | `public/` (estático) |
-| API (coleta e relatórios) | `netlify/functions/api.mjs` → `/api/*` |
-| Processamento da fila e limpeza | `netlify/functions/flush.mjs` (agendada a cada 15 min) |
-| Métricas | Postgres: Netlify Database ou qualquer Postgres via `DATABASE_URL` |
-| Gravações e fila de entrada | Netlify Blobs |
+| Painel + script `t.js` | GitHub Pages, branch `gh-pages` (https://walisouza.github.io/rastro/) |
+| API (coleta e relatórios) | Supabase Edge Function `rastro` (código em `lib/`, empacotado em `supabase/functions/rastro/api.js`) |
+| Métricas | Postgres do Supabase (tabelas `hm_*`, migração em `supabase/migrations/`) |
+| Gravações de sessão | Supabase Storage, bucket privado `rastro-replay` |
 
-## Como os dados fluem
+A coleta grava cada lote direto no banco. O Supabase fica sempre ligado e não cobra por hora acordada. O script envia a cada 20s e quando a aba fecha, e para de enviar por 6h se a chave do site for inválida.
 
-1. O script `t.js` envia lotes a cada 6s e quando a aba fecha.
-2. `/api/collect` guarda o lote numa **fila no Blobs** e não acorda o banco. As gravações vão direto para o Blobs.
-3. A function agendada leva a fila para o banco em bloco. Com Netlify Database isso acontece a cada 3h (`HM_FLUSH_MINUTES`). Com `DATABASE_URL`, a cada 15 min.
-4. Ao abrir o painel, a fila é processada na hora. Também dá para usar o botão **Atualizar dados**.
+### Atualizar
 
-Isso existe porque o Netlify Database cobra pelo tempo em que o banco fica acordado. No plano Free o limite é de 48 unidades de computação por mês. Se cada visita gravasse direto no banco, ele nunca dormiria.
+1. `RASTRO_API=https://<projeto>.supabase.co/functions/v1/rastro npm run build`
+2. Commit e push na `main`. O `index.ts` da function importa o `api.js` deste repositório fixado num commit, então troque o hash no `index.ts` e faça o deploy da function.
+3. Publique `public/` na branch `gh-pages`.
 
-## Publicar
+A senha do painel fica no banco como hash (`hm_meta.auth_pw_sha256`) ou na variável `HM_PASSWORD` da function.
 
-1. Suba esta pasta para um repositório no GitHub e importe no Netlify (**Add new project → Import an existing project**). O build já está configurado no `netlify.toml`. Também funciona pela CLI: `npm i && npx netlify deploy --prod`.
-2. Em **Project configuration → Environment variables**, crie:
-   - `HM_PASSWORD`: senha do painel (obrigatória)
-   - `HM_SECRET`: opcional. É uma string aleatória longa usada para assinar o login. Se não existir, a senha é usada no lugar.
-3. Escolha o banco:
-   - **Netlify Database**: em **Data & Storage → Database**, clique em *Create a database* (ou rode `npx netlify database init`). Ele só existe em contas com plano por créditos.
-   - **Postgres externo** (ex.: Supabase grátis): crie `DATABASE_URL` com a connection string. No Supabase, use a do *Transaction pooler*, porta 6543.
-4. Faça um novo deploy, abra o site e entre com a senha. As tabelas são criadas sozinhas no primeiro acesso.
+O código de Netlify (functions, Blobs, Netlify Database) continua no repositório como alternativa, mas os builds no Netlify estão desligados no `netlify.toml`.
 
 ## Instalar num site de cliente
 
