@@ -1,7 +1,7 @@
 // Rastro — jornada (sankey) e funil
 import { S, api, baseParams, esc, fmtInt, fmtPct, showTip, hideTip, go, $, $$, site } from './app.js';
 
-const NODE_COLORS = ['#3b3bd6', '#21a0c9', '#2fb36d', '#d9a400', '#e0612f', '#a14bd1', '#5a6378'];
+const NODE_COLORS = ['#c8f550', '#5ec8ff', '#b18cff', '#ffb547', '#ff7a6b', '#4fe0c0', '#6b6f76'];
 const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem('rastro_' + k)) ?? d; } catch { return d; } };
 const lsSet = (k, v) => { try { localStorage.setItem('rastro_' + k, JSON.stringify(v)); } catch {} };
 
@@ -69,9 +69,9 @@ export async function renderJourney(el, alive, q) {
   const graph = sk({ nodes: nodeArr.map((d) => ({ ...d })), links: linkArr.map((d) => ({ ...d })) });
   const colorOf = new Map(); let ci = 0;
   const col = (n) => {
-    if (n.label === EXIT) return '#c9ccd6';
-    if (n.label === GOAL) return '#1a8a5f';
-    if (n.label === OTHER) return '#8a90a3';
+    if (n.label === EXIT) return '#4a4d54';
+    if (n.label === GOAL) return '#5ee0a0';
+    if (n.label === OTHER) return '#6b6f76';
     if (!colorOf.has(n.label)) colorOf.set(n.label, NODE_COLORS[ci++ % (NODE_COLORS.length - 1)]);
     return colorOf.get(n.label);
   };
@@ -95,7 +95,7 @@ export async function renderJourney(el, alive, q) {
     g.onmousemove = (e) => {
       const exit = n.sourceLinks.find((l) => l.target.label === EXIT);
       const conv = n.sourceLinks.find((l) => l.target.label === GOAL);
-      showTip(`<b>${esc(n.label)}</b><div class="tr"><span>Sessões nesta etapa</span><span>${fmtInt(n.value)}</span></div>${conv ? `<div class="tr"><span>Converteram aqui</span><span>${fmtPct(conv.value / n.value, 0)}</span></div>` : ''}${exit ? `<div class="tr"><span>Saíram sem converter</span><span>${fmtPct(exit.value / n.value, 0)}</span></div>` : ''}${n.label !== EXIT && n.label !== OTHER && n.label !== GOAL ? '<div class="muted small" style="color:#aab0c2">Clique para começar a jornada aqui</div>' : ''}`, e.clientX, e.clientY);
+      showTip(`<b>${esc(n.label)}</b><div class="tr"><span>Sessões nesta etapa</span><span>${fmtInt(n.value)}</span></div>${conv ? `<div class="tr"><span>Converteram aqui</span><span>${fmtPct(conv.value / n.value, 0)}</span></div>` : ''}${exit ? `<div class="tr"><span>Saíram sem converter</span><span>${fmtPct(exit.value / n.value, 0)}</span></div>` : ''}${n.label !== EXIT && n.label !== OTHER && n.label !== GOAL ? '<div class="muted small" style="color:#5d6066">Clique para começar a jornada aqui</div>' : ''}`, e.clientX, e.clientY);
     };
     g.onmouseleave = hideTip;
     g.onclick = () => { if (n.label !== EXIT && n.label !== OTHER && n.label !== GOAL) { hideTip(); nav('start', n.label); } };
