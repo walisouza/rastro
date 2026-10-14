@@ -62,7 +62,7 @@ export async function renderJourney(el, alive, q) {
   const linkArr = [...links.entries()].map(([k, v]) => { const [a, b] = k.split('>'); return { source: idx.get(a), target: idx.get(b), value: v }; });
 
   const box = $('#sk-box');
-  const W = Math.max(720, box.clientWidth - 40), H = Math.max(360, Math.min(720, 60 + topN * 58));
+  const W = Math.max(innerWidth < 860 ? 600 : 720, box.clientWidth - 40), H = Math.max(360, Math.min(720, 60 + topN * 58));
   const { sankey, sankeyLinkHorizontal, sankeyLeft } = window.RV;
   const sk = sankey().nodeAlign(sankeyLeft).nodeWidth(12).nodePadding(14).extent([[0, 28], [W - 170, H - 6]])
     .nodeSort((a, b) => (a.label === GOAL) - (b.label === GOAL) || (a.label === EXIT) - (b.label === EXIT) || (a.label === OTHER) - (b.label === OTHER) || b.value - a.value);
