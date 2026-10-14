@@ -138,16 +138,17 @@ function renderLogin(msg = '') {
 
 // ================================================================ shell
 const NAV = [
-  ['overview', 'Visão geral'], ['pages', 'Páginas'], ['heatmap', 'Mapa de calor'], ['journey', 'Jornada'],
-  ['funnel', 'Funil'], ['sessions', 'Sessões'], ['-'], ['settings', 'Sites e instalação'],
+  ['#', 'Relatórios'], ['overview', 'Visão geral'], ['pages', 'Páginas'],
+  ['#', 'Comportamento'], ['heatmap', 'Mapa de calor'], ['journey', 'Jornada'], ['funnel', 'Funil'], ['sessions', 'Sessões'],
+  ['#', 'Conta'], ['settings', 'Sites e instalação'],
 ];
 function renderShell() {
   document.getElementById('app').innerHTML = `
   <div class="shell">
     <aside class="rail">
       <a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a>
-      <nav class="nav">${NAV.map(([k, l]) => (k === '-' ? '<div class="sep"></div>' : `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`)).join('')}</nav>
-      <div class="rail-foot"><button id="theme">Alternar tema</button><button id="out">Sair</button></div>
+      <nav class="nav">${NAV.map(([k, l]) => (k === '#' ? `<div class="lbl-sec">${l}</div>` : `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`)).join('')}</nav>
+      <div class="rail-foot"><button id="theme">Tema</button><button id="out">Sair</button></div>
     </aside>
     <div class="main">
       <div class="topbar" id="topbar"></div>
@@ -156,7 +157,7 @@ function renderShell() {
   </div>`;
   $('#out').onclick = logout;
   $('#theme').onclick = () => {
-    const dark = document.documentElement.dataset.theme === 'dark' || (!document.documentElement.dataset.theme && matchMedia('(prefers-color-scheme: dark)').matches);
+    const dark = document.documentElement.dataset.theme !== 'light';
     document.documentElement.dataset.theme = dark ? 'light' : 'dark';
     store.set('theme', document.documentElement.dataset.theme);
   };
@@ -254,7 +255,7 @@ async function route() {
 window.addEventListener('hashchange', route);
 
 async function boot() {
-  const th = store.get('theme', null); if (th) document.documentElement.dataset.theme = th;
+  document.documentElement.dataset.theme = store.get('theme', null) || 'dark';
   if (!S.token) return renderLogin();
   renderShell();
   try {
