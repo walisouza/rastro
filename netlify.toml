@@ -1,4 +1,6 @@
 [build]
+  # o backend foi para o Supabase e o painel para o GitHub Pages: pula builds no Netlify (não gasta créditos)
+  ignore = "exit 0"
   command = "npm run build"
   publish = "public"
 

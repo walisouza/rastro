@@ -2,7 +2,7 @@
 import { chromium } from 'playwright-core';
 import { startServer } from './server.mjs';
 
-const { server, url, db } = await startServer({ port: 8899 });
+const { server, url, db } = await startServer({ port: 8899, proxy: process.env.E2E_PROXY });
 const api = async (path, opts = {}, token) => {
   const r = await fetch(url + '/api/' + path, { ...opts, headers: { 'content-type': 'application/json', ...(token ? { authorization: 'Bearer ' + token } : {}), ...(opts.headers || {}) } });
   const t = await r.text();
@@ -65,7 +65,7 @@ await new Promise((r) => setTimeout(r, 800));
 ok(!errors.filter((e) => !/favicon/.test(e)).length, 'sem erros no console do site: ' + errors.join(' | '));
 
 let st = await api('status', {}, token);
-ok(st.pending > 0, 'lotes na fila antes de processar: ' + st.pending);
+ok(process.env.E2E_PROXY ? st.pending === 0 : st.pending > 0, 'lotes na fila antes de processar: ' + st.pending);
 let fr; do { fr = await api('flush', {}, token); } while (fr.remaining > 0);
 ok(fr.failed === 0, 'fila processada sem falhas (' + fr.processed + ' lotes)');
 st = await api('status', {}, token);

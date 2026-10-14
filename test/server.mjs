@@ -4,11 +4,24 @@ import { readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { PGlite } from '@electric-sql/pglite';
 
-export async function startServer({ port = 8899, password = 'teste123', dataDir } = {}) {
+export async function startServer({ port = 8899, password = 'teste123', dataDir, proxy } = {}) {
   process.env.HM_PASSWORD = password;
-  globalThis.__HM_TEST_DB = dataDir ? new PGlite(dataDir) : new PGlite();
-  globalThis.__HM_TEST_BLOBS = new Map();
-  const { handle } = await import('../lib/api.mjs');
+  let handle;
+  if (proxy) {
+    // repassa /api/* para outra implementação (ex.: a Edge Function rodando no Deno em /rastro/*)
+    handle = async (req) => {
+      const u = new URL(req.url);
+      const target = proxy + u.pathname.replace(/^\/api/, '') + u.search;
+      const body = ['GET', 'HEAD'].includes(req.method) ? undefined : await req.arrayBuffer();
+      const h = new Headers(req.headers); h.delete('host'); h.delete('content-length');
+      const r = await fetch(target, { method: req.method, headers: h, body });
+      return new Response(await r.arrayBuffer(), { status: r.status, headers: r.headers });
+    };
+  } else {
+    globalThis.__HM_TEST_DB = dataDir ? new PGlite(dataDir) : new PGlite();
+    globalThis.__HM_TEST_BLOBS = new Map();
+    ({ handle } = await import('../lib/api.mjs'));
+  }
   const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
   const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);

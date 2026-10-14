@@ -11,11 +11,16 @@ import { gzipSync, strToU8 } from 'fflate';
   if (!script) return;
   var KEY = script.getAttribute('data-key');
   if (!KEY) return;
-  var BASE = new URL(script.src, location.href).origin;
+  // endereço da API: pasta onde está o t.js (Supabase: .../functions/v1/rastro) ou /api no Netlify
+  var SRC = new URL(script.src, location.href);
+  var API = script.getAttribute('data-api') || (SRC.origin + SRC.pathname.replace(/\/t\.js$/, ''));
+  if (API === SRC.origin) API += '/api';
   var UA = navigator.userAgent || '';
   if (/bot|crawl|spider|slurp|headless|lighthouse|pagespeed|prerender|phantom/i.test(UA)) return;
   if (script.getAttribute('data-dnt') === 'respect' && (navigator.doNotTrack === '1' || window.doNotTrack === '1')) return;
   if (location.search.indexOf('rastro_off') > -1) return;
+  // chave inválida ou domínio não autorizado: para de enviar por 6h (economiza requisições)
+  try { var off = +localStorage.getItem('rs_off_' + KEY); if (off && Date.now() - off < 6 * 3600e3) return; } catch (e) {}
 
   // ---------------------------------------------------------------- utils
   var now = function () { return Date.now(); };
@@ -198,7 +203,7 @@ import { gzipSync, strToU8 } from 'fflate';
     var ts = now();
     if (ts - lastMove < 100) return;
     lastMove = ts; active();
-    var k = Math.round(e.pageX / 16) + ':' + Math.round(e.pageY / 16);
+    var k = Math.round(e.pageX / 24) + ':' + Math.round(e.pageY / 24);
     moves[k] = (moves[k] || 0) + 1;
     var t = e.target && e.target.nodeType === 1 ? e.target : null;
     var z = t && t.closest ? zoneOf(t) : null;
@@ -241,11 +246,16 @@ import { gzipSync, strToU8 } from 'fflate';
     for (var s in hover) push({ t: 'hover', sel: s, v: hover[s].v, txt: hover[s].txt });
     for (var k in moves) {
       var xy = k.split(':');
-      push({ t: 'move', x: +xy[0] * 16, y: +xy[1] * 16, w: window.innerWidth, v: moves[k] });
+      push({ t: 'move', x: +xy[0] * 24, y: +xy[1] * 24, w: window.innerWidth, v: moves[k] });
     }
     hover = {}; moves = {};
   }
-  var sending = false, failures = 0;
+  var sending = false, failures = 0, stopped = false;
+  function stop() {
+    stopped = true;
+    LS.set('rs_off_' + KEY, String(Date.now()));
+    if (stopRec) { try { stopRec(); } catch (e) {} stopRec = null; }
+  }
   function beacon(url, body) {
     if (body.length >= 60000) return false;
     try { if (navigator.sendBeacon && navigator.sendBeacon(url, new Blob([body], { type: 'text/plain' }))) return true; } catch (err) {}
@@ -261,7 +271,8 @@ import { gzipSync, strToU8 } from 'fflate';
       var snap = r.some(function (x) { return x.type === 2; });
       chunks.push({ pv: pv.id, seq: pv.cseq++, ts: r[0].timestamp, snap: snap, enc: 'gz', d: b64(u8) });
     }
-    var url = BASE + '/api/collect';
+    if (stopped) return;
+    var url = API + '/collect';
     saveSess();
     if (final) {
       // ao sair: primeiro os eventos (pequenos, chegam via beacon), depois a gravação
@@ -274,12 +285,16 @@ import { gzipSync, strToU8 } from 'fflate';
     if (final && body.length < 60000 && beacon(url, body)) return;
     sending = true;
     fetch(url, { method: 'POST', body: body, headers: { 'content-type': 'text/plain' }, keepalive: body.length < 60000, credentials: 'omit' })
-      .then(function (res) { failures = res.ok ? 0 : failures + 1; })
+      .then(function (res) {
+        failures = res.ok ? 0 : failures + 1;
+        if (res.status === 404 || res.status === 403) stop();
+      })
       .catch(function () { failures++; if (!final && failures < 3) { E = e.concat(E); R = []; } })
       .then(function () { sending = false; });
   }
-  setTimeout(function () { flush(false); }, 2500);
-  setInterval(function () { if (failures < 5) flush(false); }, 6000);
+  // envia aos 3s (pega o início da gravação) e depois a cada 20s; ao sair da página, envia o restante
+  setTimeout(function () { flush(false); }, 3000);
+  setInterval(function () { if (failures < 3) flush(false); }, 20000);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); });
   window.addEventListener('pagehide', function () { flush(true); });
 
@@ -301,7 +316,7 @@ import { gzipSync, strToU8 } from 'fflate';
   var stopRec = null;
   function startReplay() {
     if (sess.rp === null) { sess.rp = Math.random() < cfg.rs; saveSess(); }
-    if (!sess.rp || stopRec) return;
+    if (!sess.rp || stopRec || stopped) return;
     try {
       stopRec = record({
         emit: function (ev) { if (R.length < 20000) R.push(ev); },
@@ -321,8 +336,8 @@ import { gzipSync, strToU8 } from 'fflate';
   try { cached = JSON.parse(LS.get('rs_cfg') || 'null'); } catch (e) {}
   if (cached && cached.k === KEY && now() - cached.t < 10 * 60e3) { cfg = cached.c; startReplay(); }
   else {
-    fetch(BASE + '/api/config?k=' + encodeURIComponent(KEY), { credentials: 'omit' })
-      .then(function (r) { return r.ok ? r.json() : null; })
+    fetch(API + '/config?k=' + encodeURIComponent(KEY), { credentials: 'omit' })
+      .then(function (r) { if (r.status === 404) { stop(); return null; } return r.ok ? r.json() : null; })
       .then(function (c) { if (c) { cfg = c; LS.set('rs_cfg', JSON.stringify({ k: KEY, t: now(), c: c })); } startReplay(); })
       .catch(function () {});
   }

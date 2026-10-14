@@ -80,9 +80,14 @@ export const devIcon = (d) => icon(d === 'mobile' ? 'mobile' : d === 'tablet' ? 
 export const devName = (d) => ({ desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' }[d] || d || '—');
 
 // ================================================================ API
+// RASTRO_API (definido em config.js) aponta para a Edge Function do Supabase; sem ele, usa /api do próprio site
+export const API_BASE = (window.RASTRO_API || '/api').replace(/\/+$/, '');
+// o t.js fica junto do painel; quando a API está em outro domínio, o snippet leva data-api
+export const SCRIPT_URL = new URL('t.js', location.href).href;
+export const SNIPPET_API = API_BASE.startsWith('http') ? API_BASE : '';
 export async function api(path, params = {}, opts = {}) {
   const qs = new URLSearchParams(Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')).toString();
-  const r = await fetch('/api/' + path + (qs ? '?' + qs : ''), {
+  const r = await fetch(API_BASE + '/' + path + (qs ? '?' + qs : ''), {
     method: opts.method || 'GET',
     headers: { 'content-type': 'application/json', ...(S.token ? { authorization: 'Bearer ' + S.token } : {}) },
     body: opts.body ? JSON.stringify(opts.body) : undefined,
@@ -482,8 +487,7 @@ async function renderSettings(el, alive, arg) {
   await reloadSites();
   if (!alive()) return;
   const cur = S.sites.find((s) => s.id === (arg || S.siteId)) || null;
-  const origin = location.origin;
-  const snippet = (s) => `<script src="${origin}/t.js" data-key="${s.site_key}" defer></script>`;
+  const snippet = (s) => `<script src="${SCRIPT_URL}"${SNIPPET_API ? ` data-api="${SNIPPET_API}"` : ''} data-key="${s.site_key}" defer></script>`;
   el.innerHTML = `
     <div class="page-head"><div><h1>Sites e instalação</h1><p>Cadastre cada site de cliente, copie o script e defina como as páginas são agrupadas.</p></div>
       <button class="btn primary" id="new-site">${icon('plus')} Novo site</button></div>
