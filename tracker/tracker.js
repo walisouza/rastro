@@ -174,7 +174,7 @@ import { gzipSync, strToU8 } from 'fflate';
       ev.m = { href: link.href.slice(0, 500), out: String(out) };
     }
     push(ev);
-    if (ev.m && ev.m.out === '1') setTimeout(function () { flush(true, true); }, 0); // saindo do site: envia já
+    if (ev.m && ev.m.out === '1') setTimeout(function () { flushEvents(true); }, 0); // saindo do site (ex.: ticketeria): envia já
     pv.cl++;
     // rage: 3+ cliques em 1s num raio de 30px
     burst = burst.filter(function (b) { return ts - b.ts < 1000 && Math.abs(b.x - ev.x) < 30 && Math.abs(b.y - ev.y) < 30; });
@@ -250,7 +250,7 @@ import { gzipSync, strToU8 } from 'fflate';
     }
     hover = {}; moves = {};
   }
-  var sending = false, failures = 0, stopped = false;
+  var failures = 0, stopped = false;
   function stop() {
     stopped = true;
     LS.set('rs_off_' + KEY, String(Date.now()));
@@ -262,39 +262,70 @@ import { gzipSync, strToU8 } from 'fflate';
     try { fetch(url, { method: 'POST', body: body, headers: { 'content-type': 'text/plain' }, keepalive: true, credentials: 'omit' }); return true; } catch (err) {}
     return false;
   }
-  function flush(final, eventsOnly) {
-    if (sending && !final) return;
-    drainAggregates();
-    var e = E.splice(0), r = eventsOnly ? [] : R.splice(0), chunks = [];
-    if (r.length) {
-      var u8 = gzipSync(strToU8(JSON.stringify(r)), { level: 6 });
-      var snap = r.some(function (x) { return x.type === 2; });
-      chunks.push({ pv: pv.id, seq: pv.cseq++, ts: r[0].timestamp, snap: snap, enc: 'gz', d: b64(u8) });
-    }
+  // ---------------------------------------------------------------- envio econômico
+  // Eventos e métricas da página: enviados quando a pessoa sai/troca de aba (beacon) e,
+  // em visitas longas, a cada 10 min. Gravação: o início sai logo (é grande demais para o beacon),
+  // depois só quando o buffer passa de ~300 KB (cabe no envio de saída), a cada 10 min ou na saída.
+  var EVERY = 10 * 60e3, REPLAY_MAX = 300000, rawBytes = 0, lastSent = 0;
+  function post(body, final) {
     if (stopped) return;
     var url = API + '/collect';
-    saveSess();
-    if (final) {
-      // ao sair: primeiro os eventos (pequenos, chegam via beacon), depois a gravação
-      var small = JSON.stringify({ k: KEY, s: sessPayload(), p: [pvPayload(pv)], e: e, r: [] });
-      beacon(url, small);
-      if (!chunks.length) return;
-      e = [];
-    }
-    var body = JSON.stringify({ k: KEY, s: sessPayload(), p: [pvPayload(pv)], e: e, r: chunks });
-    if (final && body.length < 60000 && beacon(url, body)) return;
-    sending = true;
+    if (final && beacon(url, body)) return;
     fetch(url, { method: 'POST', body: body, headers: { 'content-type': 'text/plain' }, keepalive: body.length < 60000, credentials: 'omit' })
       .then(function (res) {
         failures = res.ok ? 0 : failures + 1;
         if (res.status === 404 || res.status === 403) stop();
       })
-      .catch(function () { failures++; if (!final && failures < 3) { E = e.concat(E); R = []; } })
-      .then(function () { sending = false; });
+      .catch(function () { failures++; });
   }
-  // envia aos 3s (pega o início da gravação) e depois a cada 20s; ao sair da página, envia o restante
-  setTimeout(function () { flush(false); }, 3000);
-  setInterval(function () { if (failures < 3) flush(false); }, 20000);
+  function head(e, r) { return JSON.stringify({ k: KEY, s: sessPayload(), p: [pvPayload(pv)], e: e || [], r: r || [] }); }
+  function flushEvents(final) {
+    if (stopped) return;
+    drainAggregates();
+    saveSess();
+    var e = E.splice(0);
+    // saída logo após outro envio (ex.: troca de aba + fechar) sem nada novo: não envia de novo
+    if (!e.length && now() - lastSent < 3000) return;
+    // divide em lotes que cabem no beacon (~55 KB)
+    var batch = [], size = 0;
+    for (var i = 0; i < e.length; i++) {
+      var n = JSON.stringify(e[i]).length + 1;
+      if (batch.length && size + n > 50000) { post(head(batch), final); batch = []; size = 0; }
+      batch.push(e[i]); size += n;
+    }
+    post(head(batch), final);
+    lastSent = now();
+  }
+  function flushReplay(final) {
+    if (stopped || !R.length) return;
+    var r = R.splice(0); rawBytes = 0;
+    var u8 = gzipSync(strToU8(JSON.stringify(r)), { level: 6 });
+    var snap = r.some(function (x) { return x.type === 2; });
+    post(head([], [{ pv: pv.id, seq: pv.cseq++, ts: r[0].timestamp, snap: snap, enc: 'gz', d: b64(u8) }]), final);
+  }
+  function flush(final) {
+    if (stopped) return;
+    // se eventos + gravação couberem num envio só (< 55 KB), manda tudo junto
+    if (R.length) {
+      drainAggregates();
+      var r = R.slice(), u8 = gzipSync(strToU8(JSON.stringify(r)), { level: 6 });
+      var chunk = { pv: pv.id, seq: pv.cseq, ts: r[0].timestamp, snap: r.some(function (x) { return x.type === 2; }), enc: 'gz', d: b64(u8) };
+      var body = head(E, [chunk]);
+      if (body.length < 55000) {
+        R.splice(0, r.length); rawBytes = 0; pv.cseq++; E.splice(0); saveSess();
+        post(body, final); lastSent = now();
+        return;
+      }
+    }
+    flushEvents(final); flushReplay(final);
+  }
+  function onReplayEvent(ev) {
+    if (R.length >= 20000) return;
+    R.push(ev);
+    try { rawBytes += JSON.stringify(ev).length; } catch (e) {}
+    if (rawBytes > REPLAY_MAX) flushReplay(false);
+  }
+  setInterval(function () { if (failures < 3 && now() - lastSent >= EVERY - 1000) flush(false); }, 60e3);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); });
   window.addEventListener('pagehide', function () { flush(true); });
 
@@ -319,7 +350,7 @@ import { gzipSync, strToU8 } from 'fflate';
     if (!sess.rp || stopRec || stopped) return;
     try {
       stopRec = record({
-        emit: function (ev) { if (R.length < 20000) R.push(ev); },
+        emit: onReplayEvent,
         maskAllInputs: true,
         maskTextClass: 'rastro-mask',
         blockClass: 'rastro-block',
@@ -330,6 +361,8 @@ import { gzipSync, strToU8 } from 'fflate';
         slimDOMOptions: 'all',
         sampling: { mousemove: 50, scroll: 150, media: 800, input: 'last' },
       });
+      // envia o início da gravação (retrato da página, usado no mapa de calor) 3s depois de começar a gravar
+      setTimeout(function () { flushReplay(false); }, 3000);
     } catch (e) { stopRec = null; }
   }
   var cached = null;
