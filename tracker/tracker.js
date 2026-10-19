@@ -133,7 +133,7 @@ import { gzipSync, strToU8 } from 'fflate';
   }
 
   // ---------------------------------------------------------------- atividade, scroll, tempo
-  var lastActive = now(), lastMut = 0;
+  var lastActive = now(), lastMut = 0, IDLE_MAX = 30 * 60e3;
   function active() { lastActive = now(); }
   function onScroll() {
     active();
@@ -144,6 +144,8 @@ import { gzipSync, strToU8 } from 'fflate';
   ['keydown', 'touchstart', 'pointerdown'].forEach(function (t) { window.addEventListener(t, active, { passive: true, capture: true }); });
   setInterval(function () {
     if (document.visibilityState !== 'visible') return;
+    // aba visível mas parada há mais de 30 min (esquecida na tela) não soma tempo
+    if (now() - lastActive > IDLE_MAX) return;
     pv.dur += 1000;
     if (now() - lastActive < 5000) pv.act += 1000;
     var h = docH(); if (h > pv.dh) pv.dh = h;
@@ -325,7 +327,13 @@ import { gzipSync, strToU8 } from 'fflate';
     try { rawBytes += JSON.stringify(ev).length; } catch (e) {}
     if (rawBytes > REPLAY_MAX) flushReplay(false);
   }
-  setInterval(function () { if (failures < 3 && now() - lastSent >= EVERY - 1000) flush(false); }, 60e3);
+  // envio periódico só com a aba visível e alguém mexendo nos últimos 10 min; aba esquecida aberta
+  // não manda nada (o envio de saída/troca de aba continua cobrindo o resto)
+  setInterval(function () {
+    if (failures >= 3 || document.visibilityState !== 'visible') return;
+    if (now() - lastSent < EVERY - 1000 || now() - lastActive > EVERY) return;
+    flush(false);
+  }, 60e3);
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(true); });
   window.addEventListener('pagehide', function () { flush(true); });
 
