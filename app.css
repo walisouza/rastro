@@ -445,3 +445,17 @@ table.tbl { width: 100%; border-collapse: separate; border-spacing: 0; }
 .player-box .switch input[type="checkbox"]:checked + label:before { background: #c8f550 !important; }
 .player-box .switch label:after { background: #f2f3f0 !important; }
 .snippet { padding-right: 120px; }
+
+/* card de KPI clicável + página de detalhe */
+a.kpi { color: inherit; text-decoration: none; cursor: pointer; transition: border-color .15s, transform .15s; }
+a.kpi:hover { border-color: var(--accent); transform: translateY(-1px); }
+a.kpi:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.kpi-hero { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.kpi-hero .kpi-v { font-size: 44px; line-height: 1; }
+.kpi-trend { display: flex; align-items: flex-end; gap: 4px; height: 160px; }
+.kpi-trend .kt { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; min-width: 0; }
+.kpi-trend .kt i { display: block; width: 100%; max-width: 28px; background: var(--accent); border-radius: 4px 4px 0 0; }
+.kpi-trend .kt span { font-size: 10px; color: var(--muted, #8b8e93); margin-top: 4px; white-space: nowrap; }
+.kpi-trend .kt:nth-child(odd) span { visibility: hidden; }
+.kpi-act { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.panel p { margin: 0; line-height: 1.5; }

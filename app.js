@@ -155,7 +155,7 @@ const NAV = [
   ['#', 'Conta'], ['settings', 'Sites e instalação'],
 ];
 const TABS = [['overview', 'Início'], ['heatmap', 'Calor'], ['journey', 'Jornada'], ['sessions', 'Sessões']];
-const TITLES = { overview: 'Visão geral', pages: 'Páginas', heatmap: 'Mapa de calor', journey: 'Jornada', funnel: 'Funil', sessions: 'Sessões', session: 'Sessão', settings: 'Sites' };
+const TITLES = { overview: 'Visão geral', kpi: 'Indicador', pages: 'Páginas', heatmap: 'Mapa de calor', journey: 'Jornada', funnel: 'Funil', sessions: 'Sessões', session: 'Sessão', settings: 'Sites' };
 function renderShell() {
   document.getElementById('app').innerHTML = `
   <div class="shell">
@@ -263,6 +263,7 @@ async function route() {
   try {
     switch (view) {
       case 'overview': await renderOverview(el, alive); break;
+      case 'kpi': await renderKpi(el, alive, arg); break;
       case 'pages': await renderPages(el, alive); break;
       case 'heatmap': await renderHeatmap(el, alive, q); break;
       case 'journey': await renderJourney(el, alive, q); break;
@@ -384,6 +385,7 @@ function bindChart(el, series, bucket) {
 }
 
 const KPI_ICO = ['sessions', 'users', 'eye', 'target', 'clock', 'exit', 'scroll', 'pulse', 'zap', 'bug'];
+const KPI_KEYS = ['sessions', 'visitors', 'pageviews', 'conversion', 'avg_duration', 'bounce', 'scroll', 'activity', 'rage', 'errors'];
 
 // ================================================================ visão geral
 async function renderOverview(el, alive) {
@@ -407,7 +409,7 @@ async function renderOverview(el, alive) {
     <div class="page-head"><div><h1>Visão geral</h1><p>${esc(site().name)}: como as pessoas chegam, quanto ficam e onde travam.</p></div>
       <a class="btn" href="#/sessions?frustration=1">${icon('sessions')} Ver sessões com frustração</a></div>
     ${k.sessions ? '' : `<div class="note" style="margin-bottom:16px">Ainda não chegou nenhuma sessão nesse período. Confira se o script está instalado no site em <a href="#/settings">Sites e instalação</a>.</div>`}
-    <section class="kpis">${K.map(([l, v, dl, help, bad], i) => `<div class="kpi ${bad ? 'bad' : ''}" ${help ? `title="${esc(help)}"` : ''}><span class="kpi-ico">${icon(KPI_ICO[i])}</span><div class="kpi-l">${l}</div><div class="kpi-v">${v}${dl}</div></div>`).join('')}</section>
+    <section class="kpis">${K.map(([l, v, dl, help, bad], i) => `<a class="kpi ${bad ? 'bad' : ''}" href="#/kpi/${KPI_KEYS[i]}" ${help ? `title="${esc(help)}"` : ''} aria-label="Detalhar ${esc(l)}"><span class="kpi-ico">${icon(KPI_ICO[i])}</span><div class="kpi-l">${l}</div><div class="kpi-v">${v}${dl}</div></a>`).join('')}</section>
     <section class="panel" style="margin-bottom:16px">
       <div class="panel-head"><h2>Sessões ao longo do tempo</h2><div class="legend"><span><i></i>Sessões</span><span><i class="l3"></i>Converteram</span><span><i class="l2"></i>Com frustração ou erro</span></div></div>
       <div class="only-d">${lineChart(d.series, d.bucket)}</div><div class="only-m">${barChart(d.series, d.bucket)}</div>
@@ -429,6 +431,124 @@ async function renderOverview(el, alive) {
     </div>`;
   bindChart(el, d.series, d.bucket); bindBars(el);
   $$('tr[data-page]', el).forEach((tr) => (tr.onclick = () => go('#/heatmap?page=' + encodeURIComponent(tr.dataset.page))));
+}
+
+// ================================================================ detalhe de um indicador (seta ↗ dos cards)
+const pct = (v) => fmtPct(v);
+const KPI_INFO = {
+  sessions: { t: 'Sessões', fmt: fmtInt, val: (k) => k.sessions, pt: (s) => s.sessions,
+    what: 'Cada visita ao site. Uma sessão começa quando a pessoa abre a página e termina depois de 30 minutos sem atividade ou quando ela fecha a aba.',
+    how: 'Contagem de sessões registradas pelo script no período. Uma mesma pessoa que volta outro dia conta de novo.',
+    read: 'Mede o alcance: quanto tráfego as campanhas e o orgânico estão trazendo. Sozinho não diz se a página funciona; olhe junto com a conversão e a rejeição.',
+    act: ['Compare os canais abaixo: o canal que traz muita sessão e pouca conversão é onde investir em criativo ou segmentação.', 'Picos no gráfico costumam coincidir com post, disparo ou anúncio. Anote a causa para repetir o que deu certo.'],
+    by: ['channels', 'devices'], col: 'n' },
+  visitors: { t: 'Visitantes', fmt: fmtInt, val: (k) => k.visitors,
+    what: 'Pessoas diferentes (navegadores únicos) que visitaram o site no período.',
+    how: 'Contagem de identificadores de visitante distintos. O identificador fica no navegador: se a pessoa limpar os dados ou trocar de aparelho, conta como outra.',
+    read: (k) => `A relação sessões ÷ visitantes é ${(k.sessions / Math.max(1, k.visitors)).toFixed(2).replace('.', ',')}. Perto de 1 = quase todo mundo visita uma vez só; acima de 1,3 = público que volta. ${fmtPct(k.new_visitors, 0)} dos visitantes são novos.`,
+    act: ['Muitos visitantes novos e pouca conversão: a página precisa explicar e vender sozinha logo no topo.', 'Visitantes que voltam são quem está decidindo: lembretes (remarketing, e-mail, WhatsApp) costumam converter bem.'],
+    by: ['channels', 'devices'], col: 'n' },
+  pageviews: { t: 'Pageviews', fmt: fmtInt, val: (k) => k.pageviews, pt: (s) => s.pageviews,
+    what: 'Quantas páginas foram vistas no total. Uma sessão que passa por 3 páginas soma 3 pageviews.',
+    how: 'Soma das páginas vistas em todas as sessões do período.',
+    read: (k) => `Em média, ${(k.pps || 0).toFixed(2).replace('.', ',')} páginas por sessão. Em landing page de uma página só isso fica perto de 1, e tudo bem: o que importa é a conversão.`,
+    act: ['Em sites com várias páginas, poucas páginas por sessão indicam que os links internos não chamam atenção.', 'Veja em Páginas quais recebem mais views e se elas levam à conversão.'],
+    link: ['#/pages', 'Comparar páginas'] },
+  conversion: { t: 'Conversão', short: 'Conversão', fmt: pct, val: (k) => k.conversion, pt: (s) => (s.sessions ? s.converted / s.sessions : null),
+    what: 'Parte das sessões que clicou no link de conversão configurado para o site (ex.: o botão que leva à ticketeria).',
+    how: (k) => `Sessões com ao menos um clique em link que contém "${esc(site().goal || 'qualquer link externo')}" ÷ total de sessões. No período: ${fmtInt(k.conversions)} de ${fmtInt(k.sessions)} sessões.`,
+    read: 'É o número que mais importa numa landing page. Compare por canal e dispositivo: diferenças grandes mostram onde está o problema (público errado, página lenta no celular, CTA escondido).',
+    act: ['Garanta um CTA visível sem rolar (no celular, um botão fixo no rodapé ajuda muito).', 'Canal com conversão muito abaixo da média: revise a promessa do anúncio contra o que a página mostra.', 'Use o Mapa de calor para ver onde as pessoas clicam antes de desistir.'],
+    by: ['channels', 'devices', 'landings'], col: 'conv', link: ['#/heatmap', 'Abrir mapa de calor'] },
+  avg_duration: { t: 'Duração média', short: 'Duração', fmt: fmtDur, val: (k) => k.avg_duration,
+    what: 'Tempo médio que a página ficou aberta e visível na tela por sessão.',
+    how: 'Média do tempo com a aba visível. Abas esquecidas em segundo plano não contam.',
+    read: 'Pouco tempo + alta rejeição = a pessoa não encontrou o que esperava. Muito tempo + baixa conversão = interesse existe, mas algo trava a decisão (preço, dúvida, CTA).',
+    act: ['Se a duração é baixa, olhe o topo: título, promessa e CTA precisam aparecer nos primeiros segundos.', 'Se é alta e não converte, veja as perguntas mais abertas do FAQ e responda perto do botão.'],
+    by: ['devices', 'landings'], col: 'dur', colFmt: fmtDur },
+  bounce: { t: 'Taxa de rejeição', short: 'Rejeição', fmt: pct, val: (k) => k.bounce, invert: true,
+    what: 'Sessões que viram uma página só e saíram sem clicar no link de conversão.',
+    how: 'Sessões com 1 pageview e sem conversão ÷ total de sessões. Quem clicou na conversão nunca conta como rejeição.',
+    read: 'Quanto menor, melhor. Em landing page é normal ser alta, porque só existe uma página; o sinal de alerta é a rejeição subir de um período para o outro ou ser muito maior num canal.',
+    act: ['Rejeição alta num canal específico: problema de público ou de promessa do anúncio.', 'Rejeição alta no mobile: confira velocidade e se o CTA aparece sem rolar.'],
+    by: ['channels', 'devices', 'landings'], col: 'bounce', invertCol: true },
+  scroll: { t: 'Scroll médio', fmt: (v) => (v == null ? '—' : Math.round(v) + '%'), val: (k) => k.scroll,
+    what: 'Até onde, em média, as pessoas rolam a página (0% = só viu o topo, 100% = chegou ao fim).',
+    how: 'Para cada página vista, o ponto mais baixo alcançado ÷ altura total da página. Depois, a média de todas.',
+    read: 'Mostra se o conteúdo prende. Scroll baixo significa que a maioria decide só pelo que vê no topo, então o que estiver mais abaixo (preço, line-up, FAQ) quase não é visto.',
+    act: ['Leve para cima o que mais vende (preço, data, destaque principal).', 'Repita o CTA ao longo da página para quem rola.', 'O Mapa de calor mostra em que altura as pessoas param.'],
+    link: ['#/heatmap', 'Ver onde as pessoas param'] },
+  activity: { t: 'Taxa de atividade', fmt: (v) => fmtPct(v, 0), val: (k) => k.activity,
+    what: 'Parte do tempo na página em que a pessoa estava de fato interagindo: mexendo o mouse, tocando, rolando ou digitando.',
+    how: 'Tempo ativo ÷ tempo total de cada página vista, em média.',
+    read: 'Atividade alta = a pessoa está explorando. Atividade baixa com duração alta = página aberta "parada" (vídeo tocando, pessoa distraída).',
+    act: ['Se é baixa, elementos interativos (carrossel, abas, FAQ) podem estar escondidos ou pouco convidativos.', 'Compare com as sessões gravadas para entender o comportamento.'],
+    link: ['#/sessions', 'Ver sessões'] },
+  rage: { t: 'Sessões com rage click', fmt: pct, val: (k) => k.rage, invert: true,
+    what: 'Sessões em que a pessoa clicou 3 ou mais vezes rápido no mesmo ponto. É o sinal clássico de frustração: ela esperava que algo acontecesse e não aconteceu.',
+    how: 'Sessões com ao menos um rage click ÷ total de sessões.',
+    read: 'Acima de 5% merece atenção. Normalmente são imagens que parecem botão, botões lentos ou elementos que não respondem no celular.',
+    act: ['Abra as sessões com frustração e veja onde aconteceu.', 'No Mapa de calor, os pontos com muito clique e nenhum link são candidatos a virar link ou deixar de parecer clicáveis.'],
+    link: ['#/sessions?frustration=1', 'Ver sessões com frustração'] },
+  errors: { t: 'Sessões com erro JS', fmt: pct, val: (k) => k.errors, invert: true,
+    what: 'Sessões em que aconteceu algum erro de JavaScript ou falha ao carregar arquivo (script, vídeo, imagem).',
+    how: 'Sessões com ao menos um erro registrado ÷ total de sessões.',
+    read: 'Nem todo erro é do seu site: navegadores dentro do Instagram/Facebook e bloqueadores de anúncio geram ruído. Olhe os erros que se repetem em muitas sessões e que apontam para arquivos do próprio site.',
+    act: ['Comece pelos erros com mais sessões na lista abaixo.', 'Falha ao carregar vídeo/imagem: confira caminho e tamanho do arquivo.', 'Scripts de terceiros que falham sempre (ferramentas antigas) podem ser removidos.'],
+    list: 'errors', link: ['#/sessions?errors=1', 'Ver sessões com erro'] },
+};
+
+async function renderKpi(el, alive, key) {
+  const info = KPI_INFO[key];
+  if (!info) { go('#/overview'); return; }
+  const d = await api('overview', baseParams());
+  if (!alive()) return;
+  const k = d.kpis, p = d.prev || {};
+  const t = key === 'conversion' ? (site().goal_label || info.t) : info.t;
+  const v = info.val(k), pv = info.val(p);
+  const txt = (x) => (typeof x === 'function' ? x(k) : x);
+  const avg = (rows, col) => rows.reduce((a, r) => a + (r[col] || 0) * r.n, 0) / Math.max(1, rows.reduce((a, r) => a + r.n, 0));
+  const NAMES = { channels: 'Por canal', devices: 'Por dispositivo', landings: 'Por página de entrada' };
+  const rowsOf = (b) => (b === 'devices' ? d.devices.map((x) => ({ ...x, k: devName(x.k) })) : d[b] || []);
+  const breakdown = (b) => {
+    const rows = rowsOf(b);
+    if (!rows.length) return '';
+    if (info.col === 'n' || !info.col) return `<section class="panel"><div class="panel-head"><h2>${NAMES[b]}</h2></div>${barList(rows)}</section>`;
+    const f = info.colFmt || ((x) => fmtPct(x, 0)), m = avg(rows, info.col);
+    const worse = (x) => (info.invertCol ? x > m * 1.15 : x < m * 0.85), better = (x) => (info.invertCol ? x < m * 0.85 : x > m * 1.15);
+    return `<section class="panel"><div class="panel-head"><h2>${NAMES[b]}</h2><span class="muted small">média ${f(m)}</span></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>${b === 'landings' ? 'Página' : 'Segmento'}</th><th class="n">Sessões</th><th class="n">${info.short || "Valor"}</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr><td class="lbl">${esc(r.k)}</td><td class="n">${fmtInt(r.n)}</td><td class="n"><span class="badge ${better(r[info.col]) ? 'good' : worse(r[info.col]) ? 'bad' : ''}">${f(r[info.col])}</span></td></tr>`).join('')}
+      </tbody></table></div></section>`;
+  };
+  const pts = info.pt ? d.series.map((s) => ({ b: s.b, v: info.pt(s) })) : null;
+  const trend = () => {
+    if (!pts || !pts.length) return '';
+    const max = Math.max(1e-9, ...pts.map((x) => x.v || 0));
+    const lab = (b) => { const dt = new Date(b); return d.bucket === 'hour' ? dt.getHours() + 'h' : dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); };
+    return `<section class="panel" style="margin-bottom:16px"><div class="panel-head"><h2>${esc(t)} ao longo do tempo</h2></div>
+      <div class="kpi-trend">${pts.map((x) => `<div class="kt" title="${lab(x.b)}: ${x.v == null ? '—' : info.fmt(x.v)}"><i style="height:${Math.max(2, ((x.v || 0) / max) * 100)}%"></i><span>${lab(x.b)}</span></div>`).join('')}</div></section>`;
+  };
+  if ($('#appbar-t')) $('#appbar-t').textContent = t;
+  const prevTxt = pv == null || isNaN(pv) ? 'sem dados do período anterior' : `período anterior: <b>${info.fmt(pv)}</b>`;
+  el.innerHTML = `
+    <div class="page-head"><div><a class="small" href="#/overview">← Visão geral</a><h1>${esc(t)}</h1><p>${esc(site().name)}: o que este número significa e como melhorar.</p></div>
+      ${info.link ? `<a class="btn" href="${info.link[0]}">${esc(info.link[1])}</a>` : ''}</div>
+    <section class="kpi-hero panel" style="margin-bottom:16px">
+      <div class="kpi-v">${v == null || isNaN(v) ? '—' : info.fmt(v)} ${delta(v, pv, !!info.invert)}</div>
+      <div class="muted">${prevTxt}</div>
+    </section>
+    ${trend()}
+    <div class="grid g3" style="margin-bottom:16px">
+      <section class="panel"><div class="panel-head"><h2>O que é</h2></div><p>${txt(info.what)}</p></section>
+      <section class="panel"><div class="panel-head"><h2>Como é calculado</h2></div><p>${txt(info.how)}</p></section>
+      <section class="panel"><div class="panel-head"><h2>Como ler</h2></div><p>${txt(info.read)}</p></section>
+    </div>
+    <section class="panel" style="margin-bottom:16px"><div class="panel-head"><h2>O que fazer para melhorar</h2></div>
+      <ul class="kpi-act">${info.act.map((a) => `<li>${a}</li>`).join('')}</ul></section>
+    <div class="grid g2">${(info.by || []).map(breakdown).join('')}
+      ${info.list === 'errors' ? `<section class="panel"><div class="panel-head"><h2>Erros mais frequentes</h2></div>${d.errors.length ? `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Erro</th><th class="n">Sessões</th></tr></thead><tbody>${d.errors.map((r) => `<tr><td><div class="lbl" title="${esc(r.k)}">${esc(r.k)}</div><div class="muted small">${esc(r.path || '')}</div></td><td class="n">${fmtInt(r.sessions)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="muted small">Nenhum erro no período.</div>'}</section>` : ''}
+    </div>`;
 }
 
 // ================================================================ páginas (comparador)
