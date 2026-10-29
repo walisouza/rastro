@@ -1,7 +1,7 @@
 // Rastro — jornada (sankey) e funil
 import { S, api, baseParams, esc, fmtInt, fmtPct, showTip, hideTip, go, $, $$, site } from './app.js';
 
-const NODE_COLORS = ['#c8f550', '#5ec8ff', '#b18cff', '#ffb547', '#ff7a6b', '#4fe0c0', '#6b6f76'];
+const NODE_COLORS = ['#f5ee9e', '#e55812', '#4cc395', '#f15946', '#c9c9cf', '#b18cff', '#6b6f76'];
 const lsGet = (k, d) => { try { return JSON.parse(localStorage.getItem('rastro_' + k)) ?? d; } catch { return d; } };
 const lsSet = (k, v) => { try { localStorage.setItem('rastro_' + k, JSON.stringify(v)); } catch {} };
 
@@ -70,7 +70,7 @@ export async function renderJourney(el, alive, q) {
   const colorOf = new Map(); let ci = 0;
   const col = (n) => {
     if (n.label === EXIT) return '#4a4d54';
-    if (n.label === GOAL) return '#5ee0a0';
+    if (n.label === GOAL) return '#4cc395';
     if (n.label === OTHER) return '#6b6f76';
     if (!colorOf.has(n.label)) colorOf.set(n.label, NODE_COLORS[ci++ % (NODE_COLORS.length - 1)]);
     return colorOf.get(n.label);

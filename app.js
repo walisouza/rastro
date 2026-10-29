@@ -58,36 +58,75 @@ export function showTip(html, x, y) {
 }
 export const hideTip = () => { tipEl().hidden = true; };
 
+// Ícones: Tabler Icons (tabler.io/icons, MIT), versão outline
 export const ICON = {
-  overview: '<path d="M3 13h4v8H3zM10 8h4v13h-4zM17 3h4v18h-4z"/>',
-  pages: '<path d="M4 4h16v16H4zM4 9h16M9 9v11"/>',
-  heatmap: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
-  journey: '<path d="M3 6h5c4 0 4 12 8 12h5M3 18h5c2 0 3-3 4-6M16 6h5"/>',
-  funnel: '<path d="M3 4h18l-7 9v6l-4 2v-8z"/>',
-  sessions: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/>',
-  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>',
-  desktop: '<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
-  mobile: '<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>',
-  tablet: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M11 18h2"/>',
-  copy: '<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
-  play: '<path d="M7 4l13 8-13 8z"/>',
-  back: '<path d="M15 5l-7 7 7 7"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>',
-  trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
-  more: '<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
-  users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 4.5a3.2 3.2 0 0 1 0 6.3M21 20c0-2.6-1.6-4.9-4-5.7"/>',
-  eye: '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
-  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
-  exit: '<path d="M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10"/>',
-  scroll: '<rect x="7" y="3" width="10" height="18" rx="5"/><path d="M12 7v4"/>',
-  pulse: '<path d="M3 12h4l2-6 4 12 2-6h6"/>',
-  zap: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
-  bug: '<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 7V4M9 4l1.5 2M15 4l-1.5 2M3 12h4M17 12h4M4 18l3-2M20 18l-3-2"/>',
-  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',
-  refresh: '<path d="M20 11a8 8 0 0 0-14.7-4.4L3 9M4 13a8 8 0 0 0 14.7 4.4L21 15M3 4v5h5M21 20v-5h-5"/>',
+  overview: '<path d="M5 4h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M5 16h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/><path d="M15 12h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1"/><path d="M15 4h4a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1"/>',
+  pages: '<path d="M15 3v4a1 1 0 0 0 1 1h4"/><path d="M18 17h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h4l5 5v7a2 2 0 0 1 -2 2z"/><path d="M16 17v2a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h2"/>',
+  heatmap: '<path d="M12 10.941c2.333 -3.308 .167 -7.823 -1 -8.941c0 3.395 -2.235 5.299 -3.667 6.706c-1.43 1.408 -2.333 3.621 -2.333 5.588c0 3.704 3.134 6.706 7 6.706s7 -3.002 7 -6.706c0 -1.712 -1.232 -4.403 -2.333 -5.588c-2.084 3.353 -3.257 3.353 -4.667 2.235"/>',
+  journey: '<path d="M3 19a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M19 7a2 2 0 1 0 0 -4a2 2 0 0 0 0 4z"/><path d="M11 19h5.5a3.5 3.5 0 0 0 0 -7h-8a3.5 3.5 0 0 1 0 -7h4.5"/>',
+  funnel: '<path d="M4 4h16v2.172a2 2 0 0 1 -.586 1.414l-4.414 4.414v7l-6 2v-8.5l-4.48 -4.928a2 2 0 0 1 -.52 -1.345v-2.227z"/>',
+  sessions: '<path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z"/><path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z"/>',
+  settings: '<path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>',
+  desktop: '<path d="M3 5a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10z"/><path d="M7 20h10"/><path d="M9 16v4"/><path d="M15 16v4"/>',
+  mobile: '<path d="M6 5a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2v-14z"/><path d="M11 4h2"/><path d="M12 17v.01"/>',
+  tablet: '<path d="M5 4a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1v-16z"/><path d="M11 17a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"/>',
+  copy: '<path d="M7 7m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z"/><path d="M4.012 16.737a2.005 2.005 0 0 1 -1.012 -1.737v-10c0 -1.1 .9 -2 2 -2h10c.75 0 1.158 .385 1.5 1"/>',
+  play: '<path d="M7 4v16l13 -8z"/>',
+  back: '<path d="M15 6l-6 6l6 6"/>',
+  plus: '<path d="M12 5l0 14"/><path d="M5 12l14 0"/>',
+  trash: '<path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>',
+  more: '<path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/>',
+  users: '<path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/>',
+  eye: '<path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"/>',
+  target: '<path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>',
+  clock: '<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/>',
+  exit: '<path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/><path d="M9 12h12l-3 -3"/><path d="M18 15l3 -3"/>',
+  scroll: '<path d="M6 3m0 4a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-4a4 4 0 0 1 -4 -4z"/><path d="M12 7l0 4"/>',
+  pulse: '<path d="M3 12h4l3 8l4 -16l3 8h4"/>',
+  zap: '<path d="M8 13v-8.5a1.5 1.5 0 0 1 3 0v7.5"/><path d="M11 11.5v-2a1.5 1.5 0 0 1 3 0v2.5"/><path d="M14 10.5a1.5 1.5 0 0 1 3 0v1.5"/><path d="M17 11.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1 -6 6h-2h.208a6 6 0 0 1 -5.012 -2.7l-.196 -.3c-.312 -.479 -1.407 -2.388 -3.286 -5.728a1.5 1.5 0 0 1 .536 -2.022a1.867 1.867 0 0 1 2.28 .28l1.47 1.47"/><path d="M5 3l-1 -1"/><path d="M4 7h-1"/><path d="M14 3l1 -1"/><path d="M15 6h1"/>',
+  bug: '<path d="M9 9v-1a3 3 0 0 1 6 0v1"/><path d="M8 9h8a6 6 0 0 1 1 3v3a5 5 0 0 1 -10 0v-3a6 6 0 0 1 1 -3"/><path d="M3 13l4 0"/><path d="M17 13l4 0"/><path d="M12 20l0 -6"/><path d="M4 19l3.35 -2"/><path d="M20 19l-3.35 -2"/><path d="M4 7l3.75 2.4"/><path d="M20 7l-3.75 2.4"/>',
+  sun: '<path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>',
+  moon: '<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"/>',
+  refresh: '<path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4"/><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4"/>',
+  x: '<path d="M18 6l-12 12"/><path d="M6 6l12 12"/>',
+  arrow: '<path d="M17 7l-10 10"/><path d="M8 7l9 0l0 9"/>',
 };
-export const icon = (k, cls = '') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ''}</svg>`;
+// versões preenchidas (Tabler filled); onde não existe, usa a outline acima
+export const ICON_F = {
+  overview: '<path d="M9 3a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 12a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2zm10 -4a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2zm0 -8a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-4a2 2 0 0 1 -2 -2v-2a2 2 0 0 1 2 -2z"/>',
+  pages: '<path d="M12 2l.117 .007a1 1 0 0 1 .876 .876l.007 .117v4l.005 .15a2 2 0 0 0 1.838 1.844l.157 .006h4l.117 .007a1 1 0 0 1 .876 .876l.007 .117v9a3 3 0 0 1 -2.824 2.995l-.176 .005h-10a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005h5z"/><path d="M19 7h-4l-.001 -4.001z"/>',
+  heatmap: '<path d="M10 2c0 -.88 1.056 -1.331 1.692 -.722c1.958 1.876 3.096 5.995 1.75 9.12l-.08 .174l.012 .003c.625 .133 1.203 -.43 2.303 -2.173l.14 -.224a1 1 0 0 1 1.582 -.153c1.334 1.435 2.601 4.377 2.601 6.27c0 4.265 -3.591 7.705 -8 7.705s-8 -3.44 -8 -7.706c0 -2.252 1.022 -4.716 2.632 -6.301l.605 -.589c.241 -.236 .434 -.43 .618 -.624c1.43 -1.512 2.145 -2.924 2.145 -4.78"/>',
+  journey: '<path d="M11.092 2.581a1 1 0 0 1 1.754 -.116l.062 .116l8.005 17.365c.198 .566 .05 1.196 -.378 1.615a1.53 1.53 0 0 1 -1.459 .393l-7.077 -2.398l-6.899 2.338a1.535 1.535 0 0 1 -1.52 -.231l-.112 -.1c-.398 -.386 -.556 -.954 -.393 -1.556l.047 -.15l7.97 -17.276z"/>',
+  funnel: '<path d="M20 3h-16a1 1 0 0 0 -1 1v2.227l.008 .223a3 3 0 0 0 .772 1.795l4.22 4.641v8.114a1 1 0 0 0 1.316 .949l6 -2l.108 -.043a1 1 0 0 0 .576 -.906v-6.586l4.121 -4.12a3 3 0 0 0 .879 -2.123v-2.171a1 1 0 0 0 -1 -1z"/>',
+  sessions: '<path d="M20.117 7.625a1 1 0 0 0 -.564 .1l-4.553 2.275v4l4.553 2.275a1 1 0 0 0 1.447 -.892v-6.766a1 1 0 0 0 -.883 -.992z"/><path d="M5 5c-1.645 0 -3 1.355 -3 3v8c0 1.645 1.355 3 3 3h8c1.645 0 3 -1.355 3 -3v-8c0 -1.645 -1.355 -3 -3 -3z"/>',
+  settings: '<path d="M14.647 4.081a.724 .724 0 0 0 1.08 .448c2.439 -1.485 5.23 1.305 3.745 3.744a.724 .724 0 0 0 .447 1.08c2.775 .673 2.775 4.62 0 5.294a.724 .724 0 0 0 -.448 1.08c1.485 2.439 -1.305 5.23 -3.744 3.745a.724 .724 0 0 0 -1.08 .447c-.673 2.775 -4.62 2.775 -5.294 0a.724 .724 0 0 0 -1.08 -.448c-2.439 1.485 -5.23 -1.305 -3.745 -3.744a.724 .724 0 0 0 -.447 -1.08c-2.775 -.673 -2.775 -4.62 0 -5.294a.724 .724 0 0 0 .448 -1.08c-1.485 -2.439 1.305 -5.23 3.744 -3.745a.722 .722 0 0 0 1.08 -.447c.673 -2.775 4.62 -2.775 5.294 0zm-2.647 4.919a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z"/>',
+  desktop: '<path d="M7 21a1 1 0 0 1 0 -2h1v-2h-4a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-4v2h1a1 1 0 0 1 0 2zm7 -4h-4v2h4z"/>',
+  mobile: '<path d="M16 2a3 3 0 0 1 2.995 2.824l.005 .176v14a3 3 0 0 1 -2.824 2.995l-.176 .005h-8a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-14a3 3 0 0 1 2.824 -2.995l.176 -.005h8zm-4 14a1 1 0 0 0 -.993 .883l-.007 .117l.007 .127a1 1 0 0 0 1.986 0l.007 -.117l-.007 -.127a1 1 0 0 0 -.993 -.883zm1 -12h-2l-.117 .007a1 1 0 0 0 0 1.986l.117 .007h2l.117 -.007a1 1 0 0 0 0 -1.986l-.117 -.007z"/>',
+  tablet: '<path d="M18 2a2 2 0 0 1 1.995 1.85l.005 .15v16a2 2 0 0 1 -1.85 1.995l-.15 .005h-12a2 2 0 0 1 -1.995 -1.85l-.005 -.15v-16a2 2 0 0 1 1.85 -1.995l.15 -.005h12zm-6 13a2 2 0 0 0 -1.977 1.697l-.018 .154l-.005 .149l.005 .15a2 2 0 1 0 1.995 -2.15z"/>',
+  copy: '<path d="M17.997 4.17a3 3 0 0 1 2.003 2.83v12a3 3 0 0 1 -3 3h-10a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 2.003 -2.83a4 4 0 0 0 3.997 3.83h4a4 4 0 0 0 3.98 -3.597zm-3.997 -2.17a2 2 0 1 1 0 4h-4a2 2 0 1 1 0 -4z"/>',
+  play: '<path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z"/>',
+  plus: '<path d="M4.929 4.929a10 10 0 1 1 14.141 14.141a10 10 0 0 1 -14.14 -14.14zm8.071 4.071a1 1 0 1 0 -2 0v2h-2a1 1 0 1 0 0 2h2v2a1 1 0 1 0 2 0v-2h2a1 1 0 1 0 0 -2h-2v-2z"/>',
+  trash: '<path d="M20 6a1 1 0 0 1 .117 1.993l-.117 .007h-.081l-.919 11a3 3 0 0 1 -2.824 2.995l-.176 .005h-8c-1.598 0 -2.904 -1.249 -2.992 -2.75l-.005 -.167l-.923 -11.083h-.08a1 1 0 0 1 -.117 -1.993l.117 -.007h16z"/><path d="M14 2a2 2 0 0 1 2 2a1 1 0 0 1 -1.993 .117l-.007 -.117h-4l-.007 .117a1 1 0 0 1 -1.993 -.117a2 2 0 0 1 1.85 -1.995l.15 -.005h4z"/>',
+  users: '<path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z"/><path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z"/>',
+  eye: '<path d="M12 4c4.29 0 7.863 2.429 10.665 7.154l.22 .379l.045 .1l.03 .083l.014 .055l.014 .082l.011 .1v.11l-.014 .111a.992 .992 0 0 1 -.026 .11l-.039 .108l-.036 .075l-.016 .03c-2.764 4.836 -6.3 7.38 -10.555 7.499l-.313 .004c-4.396 0 -8.037 -2.549 -10.868 -7.504a1 1 0 0 1 0 -.992c2.831 -4.955 6.472 -7.504 10.868 -7.504zm0 5a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z"/>',
+  target: '<path d="M3.039 4.277l3.904 13.563c.185 .837 .92 1.516 1.831 1.642l.17 .016a2.2 2.2 0 0 0 1.982 -1.006l.045 -.078l1.4 -2.072l4.05 4.05a2.067 2.067 0 0 0 2.924 0l1.047 -1.047c.388 -.388 .606 -.913 .606 -1.461l-.008 -.182a2.067 2.067 0 0 0 -.598 -1.28l-4.047 -4.048l2.103 -1.412c.726 -.385 1.18 -1.278 1.053 -2.189a2.2 2.2 0 0 0 -1.701 -1.845l-13.524 -3.89a1 1 0 0 0 -1.236 1.24z"/>',
+  clock: '<path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-5 2.66a1 1 0 0 0 -.993 .883l-.007 .117v5l.009 .131a1 1 0 0 0 .197 .477l.087 .1l3 3l.094 .082a1 1 0 0 0 1.226 0l.094 -.083l.083 -.094a1 1 0 0 0 0 -1.226l-.083 -.094l-2.707 -2.708v-4.585l-.007 -.117a1 1 0 0 0 -.993 -.883z"/>',
+  exit: '<path d="M9.586 4l-6.586 6.586a2 2 0 0 0 0 2.828l6.586 6.586a2 2 0 0 0 2.18 .434l.145 -.068a2 2 0 0 0 1.089 -1.78v-2.586h7a2 2 0 0 0 2 -2v-4l-.005 -.15a2 2 0 0 0 -1.995 -1.85l-7 -.001v-2.585a2 2 0 0 0 -3.414 -1.414z"/>',
+  scroll: '<path d="M14 2a5 5 0 0 1 5 5v10a5 5 0 0 1 -5 5h-4a5 5 0 0 1 -5 -5v-10a5 5 0 0 1 5 -5zm-2 4a1 1 0 0 0 -1 1v4l.007 .117a1 1 0 0 0 1.993 -.117v-4l-.007 -.117a1 1 0 0 0 -.993 -.883z"/>',
+  pulse: '<path d="M17 3.34a10 10 0 1 1 -14.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 14.995 -8.336zm-.293 3.953a1 1 0 0 0 -1.414 0l-2.59 2.59l-.083 .094l-.068 .1a2.001 2.001 0 0 0 -2.547 1.774l-.005 .149l.005 .15a2 2 0 1 0 3.917 -.701a.968 .968 0 0 0 .195 -.152l2.59 -2.59l.083 -.094a1 1 0 0 0 -.083 -1.32zm-4.707 -1.293a6 6 0 0 0 -6 6a1 1 0 0 0 2 0a4 4 0 0 1 4 -4a1 1 0 0 0 0 -2z"/>',
+  zap: '<path d="M13 2l.018 .001l.016 .001l.083 .005l.011 .002h.011l.038 .009l.052 .008l.016 .006l.011 .001l.029 .011l.052 .014l.019 .009l.015 .004l.028 .014l.04 .017l.021 .012l.022 .01l.023 .015l.031 .017l.034 .024l.018 .011l.013 .012l.024 .017l.038 .034l.022 .017l.008 .01l.014 .012l.036 .041l.026 .027l.006 .009c.12 .147 .196 .322 .218 .513l.001 .012l.002 .041l.004 .064v6h5a1 1 0 0 1 .868 1.497l-.06 .091l-8 11c-.568 .783 -1.808 .38 -1.808 -.588v-6h-5a1 1 0 0 1 -.868 -1.497l.06 -.091l8 -11l.01 -.013l.018 -.024l.033 -.038l.018 -.022l.009 -.008l.013 -.014l.04 -.036l.028 -.026l.008 -.006a1 1 0 0 1 .402 -.199l.011 -.001l.027 -.005l.074 -.013l.011 -.001l.041 -.002z"/>',
+  bug: '<path d="M12 4a4 4 0 0 1 3.995 3.8l.005 .2a1 1 0 0 1 .428 .096l3.033 -1.938a1 1 0 1 1 1.078 1.684l-3.015 1.931a7.17 7.17 0 0 1 .476 2.227h3a1 1 0 0 1 0 2h-3v1a6.01 6.01 0 0 1 -.195 1.525l2.708 1.616a1 1 0 1 1 -1.026 1.718l-2.514 -1.501a6.002 6.002 0 0 1 -3.973 2.56v-5.918a1 1 0 0 0 -2 0v5.917a6.002 6.002 0 0 1 -3.973 -2.56l-2.514 1.503a1 1 0 1 1 -1.026 -1.718l2.708 -1.616a6.01 6.01 0 0 1 -.195 -1.526v-1h-3a1 1 0 0 1 0 -2h3.001v-.055a7 7 0 0 1 .474 -2.173l-3.014 -1.93a1 1 0 1 1 1.078 -1.684l3.032 1.939l.024 -.012l.068 -.027l.019 -.005l.016 -.006l.032 -.008l.04 -.013l.034 -.007l.034 -.004l.045 -.008l.015 -.001l.015 -.002l.087 -.004a4 4 0 0 1 4 -4zm0 2a2 2 0 0 0 -2 2h4a2 2 0 0 0 -2 -2z"/>',
+  sun: '<path d="M12 19a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z"/><path d="M18.313 16.91l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.218 -1.567l.102 .07z"/><path d="M7.007 16.993a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z"/><path d="M4 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"/><path d="M21 11a1 1 0 0 1 .117 1.993l-.117 .007h-1a1 1 0 0 1 -.117 -1.993l.117 -.007h1z"/><path d="M6.213 4.81l.094 .083l.7 .7a1 1 0 0 1 -1.32 1.497l-.094 -.083l-.7 -.7a1 1 0 0 1 1.217 -1.567l.102 .07z"/><path d="M19.107 4.893a1 1 0 0 1 .083 1.32l-.083 .094l-.7 .7a1 1 0 0 1 -1.497 -1.32l.083 -.094l.7 -.7a1 1 0 0 1 1.414 0z"/><path d="M12 2a1 1 0 0 1 .993 .883l.007 .117v1a1 1 0 0 1 -1.993 .117l-.007 -.117v-1a1 1 0 0 1 1 -1z"/><path d="M12 7a5 5 0 1 1 -4.995 5.217l-.005 -.217l.005 -.217a5 5 0 0 1 4.995 -4.783z"/>',
+  moon: '<path d="M12 1.992a10 10 0 1 0 9.236 13.838c.341 -.82 -.476 -1.644 -1.298 -1.31a6.5 6.5 0 0 1 -6.864 -10.787l.077 -.08c.551 -.63 .113 -1.653 -.758 -1.653h-.266l-.068 -.006l-.06 -.002z"/>',
+  sideClose: '<path d="M18 3a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h12zm0 2h-9v14h9a1 1 0 0 0 .993 -.883l.007 -.117v-12a1 1 0 0 0 -.883 -.993l-.117 -.007zm-2.293 4.293a1 1 0 0 1 .083 1.32l-.083 .094l-1.292 1.293l1.292 1.293a1 1 0 0 1 .083 1.32l-.083 .094a1 1 0 0 1 -1.32 .083l-.094 -.083l-2 -2a1 1 0 0 1 -.083 -1.32l.083 -.094l2 -2a1 1 0 0 1 1.414 0z"/>',
+  sideOpen: '<path d="M18 3a3 3 0 0 1 2.995 2.824l.005 .176v12a3 3 0 0 1 -2.824 2.995l-.176 .005h-12a3 3 0 0 1 -2.995 -2.824l-.005 -.176v-12a3 3 0 0 1 2.824 -2.995l.176 -.005h12zm0 2h-9v14h9a1 1 0 0 0 .993 -.883l.007 -.117v-12a1 1 0 0 0 -.883 -.993l-.117 -.007zm-4.387 4.21l.094 .083l2 2a1 1 0 0 1 .083 1.32l-.083 .094l-2 2a1 1 0 0 1 -1.497 -1.32l.083 -.094l1.292 -1.293l-1.292 -1.293a1 1 0 0 1 -.083 -1.32l.083 -.094a1 1 0 0 1 1.32 -.083z"/>',
+};
+ICON.logout = ICON.exit; // "Sair" usa a seta de logout (outline)
+export const icon = (k, cls = '') => (ICON_F[k]
+  ? `<svg class="${cls}" data-i="${k}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICON_F[k]}</svg>`
+  : `<svg class="${cls}" data-i="${k}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k] || ''}</svg>`);
+// sol aparece no escuro (vai para o claro), lua no claro; o CSS escolhe qual mostrar
+const themeIco = () => `<span class="th-ico">${icon('sun', 'th-sun')}${icon('moon', 'th-moon')}</span>`;
 export const devIcon = (d) => icon(d === 'mobile' ? 'mobile' : d === 'tablet' ? 'tablet' : 'desktop', 'dev-ico');
 export const devName = (d) => ({ desktop: 'Desktop', mobile: 'Mobile', tablet: 'Tablet' }[d] || d || '—');
 
@@ -158,31 +197,43 @@ const TABS = [['overview', 'Início'], ['heatmap', 'Calor'], ['journey', 'Jornad
 const TITLES = { overview: 'Visão geral', kpi: 'Indicador', pages: 'Páginas', heatmap: 'Mapa de calor', journey: 'Jornada', funnel: 'Funil', sessions: 'Sessões', session: 'Sessão', settings: 'Sites' };
 function renderShell() {
   document.getElementById('app').innerHTML = `
-  <div class="shell">
+  <div class="shell ${store.get('rail', false) ? 'collapsed' : ''}" id="shell">
     <aside class="rail">
-      <a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a>
-      <nav class="nav">${NAV.map(([k, l]) => (k === '#' ? `<div class="lbl-sec">${l}</div>` : `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`)).join('')}</nav>
-      <div class="rail-foot"><button id="theme">Tema</button><button id="out">Sair</button></div>
+      <div class="rail-top"><a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a>
+        <button class="rail-tg" id="rail-tg" type="button">${icon('sideClose', 'tg-c')}${icon('sideOpen', 'tg-o')}</button></div>
+      <nav class="nav">${NAV.map(([k, l]) => (k === '#' ? `<div class="lbl-sec"><span>${l}</span></div>` : `<a href="#/${k}" data-k="${k}" data-l="${l}">${icon(k)}<span>${l}</span></a>`)).join('')}</nav>
+      <div class="rail-foot"><button id="theme" aria-label="Alternar tema claro/escuro">${themeIco()}<span class="th-to-light">Claro</span><span class="th-to-dark">Escuro</span></button><button id="out" data-l="Sair">${icon('logout')}<span>Sair</span></button></div>
     </aside>
     <div class="main">
-      <header class="appbar"><a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a><span class="appbar-t" id="appbar-t"></span><button class="ico-btn" id="m-theme" aria-label="Alternar tema">${icon('sun')}</button></header>
+      <header class="appbar"><a class="brand" href="#/overview"><span class="brand-mark"></span><span>Rastro</span></a><span class="appbar-t" id="appbar-t"></span><button class="ico-btn" id="m-theme" aria-label="Alternar tema claro/escuro">${themeIco()}</button></header>
       <div class="topbar" id="topbar"></div>
       <main class="content" id="view"></main>
     </div>
     <nav class="tabbar" aria-label="Navegação">${TABS.map(([k, l]) => `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`).join('')}<button id="m-more" data-k="more">${icon('more')}<span>Mais</span></button></nav>
     <div class="sheet-bg" id="sheet" hidden><div class="sheet" role="dialog" aria-label="Mais opções"><i class="grab"></i>
       ${[['pages', 'Páginas'], ['funnel', 'Funil'], ['settings', 'Sites e instalação']].map(([k, l]) => `<a href="#/${k}" data-k="${k}">${icon(k)}<span>${l}</span></a>`).join('')}
-      <button id="s-theme">${icon('sun')}<span>Alternar tema</span></button><button id="s-out">${icon('exit')}<span>Sair</span></button></div></div>
-  </div>`;
+      <button id="s-theme">${themeIco()}<span class="th-to-light">Modo claro</span><span class="th-to-dark">Modo escuro</span></button><button id="s-out">${icon('logout')}<span>Sair</span></button></div></div>
+  </div>
+  <div class="oc-bg" id="oc" hidden><aside class="oc" role="dialog" aria-modal="true" aria-labelledby="oc-t">
+    <header class="oc-h"><div class="oc-ht"><span class="oc-ico" id="oc-ico"></span><h2 id="oc-t"></h2></div><button class="ico-btn oc-x" id="oc-x" aria-label="Fechar">${icon('x')}</button></header>
+    <div class="oc-b" id="oc-b"></div></aside></div>`;
   const toggleTheme = () => {
     const dark = document.documentElement.dataset.theme !== 'light';
     document.documentElement.dataset.theme = dark ? 'light' : 'dark';
     store.set('theme', document.documentElement.dataset.theme);
+    syncThemeColor();
   };
   const sheet = $('#sheet');
   $('#out').onclick = logout; $('#s-out').onclick = logout;
   $('#theme').onclick = toggleTheme; $('#m-theme').onclick = toggleTheme; $('#s-theme').onclick = () => { toggleTheme(); sheet.hidden = true; };
   $('#m-more').onclick = () => { sheet.hidden = false; };
+  const shell = $('#shell'), tg = $('#rail-tg');
+  const tgLabel = () => { const c = shell.classList.contains('collapsed'); tg.setAttribute('aria-label', c ? 'Expandir menu' : 'Recolher menu'); tg.title = c ? 'Expandir menu' : 'Recolher menu'; $$('.nav a, #out', shell).forEach((x) => (x.title = c ? x.dataset.l : '')); };
+  tgLabel();
+  tg.onclick = () => { shell.classList.toggle('collapsed'); store.set('rail', shell.classList.contains('collapsed')); tgLabel(); };
+  const oc = $('#oc');
+  oc.onclick = (e) => { if (e.target === oc) closeKpi(); };
+  $('#oc-x').onclick = closeKpi;
   sheet.onclick = (e) => { if (e.target === sheet || e.target.closest('a')) sheet.hidden = true; };
 }
 
@@ -204,6 +255,130 @@ function renderTopbar(view) {
   $('#f-range').onchange = (e) => { S.range = e.target.value; store.set('range', S.range); route(); };
   $$('#f-dev button').forEach((b) => (b.onclick = () => { S.device = b.dataset.v; store.set('device', S.device); route(); }));
   const g = $('#f-grp'); if (g) g.onchange = () => { S.grouped = g.checked; store.set('grouped', S.grouped); route(); };
+}
+
+// ================================================================ offcanvas do indicador
+let ocToken = 0;
+function openKpi(key) {
+  const oc = $('#oc'), body = $('#oc-b'), info = KPI_INFO[key]; if (!oc || !info) return;
+  const my = ++ocToken;
+  $('#oc-t').textContent = key === 'conversion' ? (site()?.goal_label || info.t) : info.t;
+  $('#oc-ico').innerHTML = icon(KPI_ICO[KPI_KEYS.indexOf(key)]);
+  body.innerHTML = '<div class="sk-wrap"><i class="sk sk-panel" style="height:120px"></i><i class="sk sk-panel" style="height:200px"></i><i class="sk sk-panel" style="height:160px"></i></div>';
+  body.scrollTop = 0;
+  oc.hidden = false; document.documentElement.classList.add('oc-lock');
+  requestAnimationFrame(() => requestAnimationFrame(() => oc.classList.add('open')));
+  setTimeout(() => $('#oc-x')?.focus(), 50);
+  renderKpi(body, () => my === ocToken, key, true).catch((e) => { if (my === ocToken) body.innerHTML = `<div class="err">${esc(e.message)}</div>`; });
+}
+function closeKpi() {
+  const oc = $('#oc'); if (!oc || oc.hidden) return;
+  ocToken++; oc.classList.remove('open'); document.documentElement.classList.remove('oc-lock');
+  setTimeout(() => { if (!oc.classList.contains('open')) oc.hidden = true; }, 380);
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeKpi(); });
+
+// ================================================================ efeito de gradiente no clique
+const FX_SEL = '.nav a, .btn, a.kpi, .chip, .seg button, .tabbar a, .tabbar button, .sheet a, .sheet button, .rail-foot button, .ico-btn, .rail-tg, .site-pick button';
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isLight = () => document.documentElement.dataset.theme === 'light';
+// faíscas só em tons de luz (creme/azul claro); laranja só no clique, como acento
+const sparkColors = (click) => (isLight() ? ['#111214', '#e55812', '#8a8c92'] : click ? ['#f5ee9e', '#ffd9a0', '#e55812', '#ffffff'] : ['#f5ee9e', '#ffffff', '#fff8cc']);
+// anel fino que se expande do ponto: a "explosão"
+function ring(t, x, y, strong) {
+  if (REDUCE) return;
+  const r = t.getBoundingClientRect(), d = Math.hypot(r.width, r.height) * (strong ? 1.25 : 0.9);
+  const el = document.createElement('i'); el.className = 'ring';
+  el.style.cssText = `left:${x - d / 2}px;top:${y - d / 2}px;width:${d}px;height:${d}px`;
+  t.appendChild(el);
+  el.animate([{ transform: 'scale(.02)', opacity: strong ? 0.9 : 0.7 }, { transform: 'scale(1)', opacity: 0 }],
+    { duration: strong ? 750 : 1000, easing: 'cubic-bezier(.16,1,.3,1)' }).onfinish = () => el.remove();
+}
+// explosãozinha: faíscas saem do ponto e somem (Web Animations, sem custo depois que terminam)
+function sparks(t, x, y, n, dist, click = false) {
+  if (REDUCE) return;
+  const cols = sparkColors(click);
+  for (let i = 0; i < n; i++) {
+    const sp = document.createElement('i'); sp.className = 'spark';
+    const a = (i / n) * Math.PI * 2 + Math.random() * 0.6, d = dist * (0.55 + Math.random() * 0.6), sz = (click ? 2.5 : 1.8) + Math.random() * (click ? 2.5 : 1.6);
+    const col = cols[i % cols.length];
+    sp.style.cssText = `left:${x}px;top:${y}px;width:${sz}px;height:${sz}px;background:${col};box-shadow:0 0 ${sz * 2}px ${col}`;
+    t.appendChild(sp);
+    sp.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 0.95 }, { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d}px)) scale(0)`, opacity: 0 }],
+      { duration: 800 + Math.random() * 400, easing: 'cubic-bezier(.16,1,.3,1)' }).onfinish = () => sp.remove();
+  }
+}
+const local = (t, e) => { const r = t.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+document.addEventListener('pointerover', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  const t = e.target.closest?.(FX_SEL); if (!t || t.contains(e.relatedTarget)) return;
+  const [x, y] = local(t, e);
+  t.classList.add('fx-j'); t.style.setProperty('--mx', x + 'px'); t.style.setProperty('--my', y + 'px');
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.remove('fx-j')));
+  if (!t._sp || performance.now() - t._sp > 700) { t._sp = performance.now(); ring(t, x, y, false); sparks(t, x, y, 5, 22); }
+});
+document.addEventListener('pointermove', (e) => {
+  if (e.pointerType !== 'mouse') return;
+  const t = e.target.closest?.(FX_SEL); if (!t) return;
+  const [x, y] = local(t, e);
+  t.style.setProperty('--mx', x + 'px'); t.style.setProperty('--my', y + 'px');
+  if (t.matches('a.kpi')) { const r = t.getBoundingClientRect(); t.style.setProperty('--ry', ((x / r.width - 0.5) * 7).toFixed(2) + 'deg'); t.style.setProperty('--rx', ((0.5 - y / r.height) * 7).toFixed(2) + 'deg'); }
+}, { passive: true });
+document.addEventListener('pointerout', (e) => {
+  const t = e.target.closest?.('a.kpi'); if (!t || t.contains(e.relatedTarget)) return;
+  t.style.setProperty('--rx', '0deg'); t.style.setProperty('--ry', '0deg');
+});
+document.addEventListener('pointerdown', (e) => {
+  const t = e.target.closest?.(FX_SEL); if (!t) return;
+  const [x, y] = local(t, e);
+  t.style.setProperty('--x', x + 'px'); t.style.setProperty('--y', y + 'px');
+  t.classList.remove('burst'); void t.offsetWidth; t.classList.add('burst');
+  clearTimeout(t._fx); t._fx = setTimeout(() => t.classList.remove('burst'), 800);
+  ring(t, x, y, true); sparks(t, x, y, 10, 44, true);
+});
+
+// cena (Theatre.js): carrega à parte; se falhar, o painel segue sem o efeito
+let cinema = null;
+import('./cinema.js').then((m) => { cinema = m; }).catch((e) => console.warn('cena desligada', e));
+
+// ================================================================ troca de filtro ao vivo: números sobem/descem, barras e linhas se ajustam
+function snapView(el) {
+  const s = { kv: {}, bars: {}, h: {}, paths: {} };
+  $$('a.kpi', el).forEach((a) => { s.kv[a.dataset.key] = a.querySelector('.kpi-v')?.firstChild?.textContent?.trim(); });
+  const hero = $('.kpi-hero .kpi-v', el); if (hero) s.kv.hero = hero.firstChild?.textContent?.trim();
+  $$('.li', el).forEach((li) => { const k = (li.closest('.panel')?.querySelector('h2')?.textContent || '') + '|' + (li.querySelector('.k')?.textContent || ''); s.bars[k] = li.querySelector('.b')?.style.width; });
+  $$('.kt i, .mbar-t i', el).forEach((i, n) => { s.h[n] = i.style.height; });
+  $$('[data-chart] path', el).forEach((p) => { s.paths[p.getAttribute('class')] = p.getAttribute('d'); });
+  return s;
+}
+const parseNum = (t) => { const m = /^(-?\d[\d.]*(?:,\d+)?)(\D*)$/.exec(t || ''); if (!m) return null; return { n: parseFloat(m[1].replace(/\./g, '').replace(',', '.')), dec: (m[1].split(',')[1] || '').length, suf: m[2] }; };
+function tweenText(node, from, to) {
+  const a = parseNum(from), b = parseNum(to); if (!a || !b || a.suf !== b.suf) return;
+  const t0 = performance.now(), dur = 700, fmt = (n) => n.toLocaleString('pt-BR', { minimumFractionDigits: b.dec, maximumFractionDigits: b.dec }) + b.suf;
+  const step = (t) => { const k = Math.min(1, (t - t0) / dur), e = 1 - (1 - k) ** 3; node.textContent = fmt(a.n + (b.n - a.n) * e); if (k < 1) requestAnimationFrame(step); else node.textContent = to; };
+  node.textContent = from; requestAnimationFrame(step);
+}
+function animateFrom(el, s) {
+  const slide = (v, from, to) => {
+    if (!v || from == null || from === to) return;
+    const a = parseNum(from), b = parseNum(to);
+    v.classList.remove('kv-up', 'kv-down'); void v.offsetWidth;
+    v.classList.add(a && b && b.n < a.n ? 'kv-down' : 'kv-up');
+    tweenText(v.firstChild, from, to);
+  };
+  $$('a.kpi', el).forEach((a) => { const v = a.querySelector('.kpi-v'); slide(v, s.kv[a.dataset.key], v?.firstChild?.textContent?.trim()); });
+  const hero = $('.kpi-hero .kpi-v', el); if (hero) slide(hero, s.kv.hero, hero.firstChild?.textContent?.trim());
+  const grow = (node, prop, from) => { const to = node.style[prop]; node.style.transition = 'none'; node.style[prop] = from; void node.offsetWidth; node.style.transition = ''; node.style[prop] = to; };
+  $$('.li', el).forEach((li) => { const b = li.querySelector('.b'); if (!b) return; const k = (li.closest('.panel')?.querySelector('h2')?.textContent || '') + '|' + (li.querySelector('.k')?.textContent || ''); grow(b, 'width', s.bars[k] ?? '0%'); });
+  $$('.kt i, .mbar-t i', el).forEach((i, n) => grow(i, 'height', s.h[n] ?? '0%'));
+  $$('[data-chart] path', el).forEach((p) => {
+    const from = s.paths[p.getAttribute('class')], to = p.getAttribute('d');
+    const cmds = (d) => (d || '').replace(/[^MLZ]/g, '');
+    if (!from || from === to) return;
+    if (cmds(from) !== cmds(to)) { p.classList.add('ln-in'); return; }
+    p.style.transition = 'none'; p.style.d = `path("${from}")`; void p.getBoundingClientRect();
+    p.style.transition = ''; p.style.d = `path("${to}")`;
+  });
 }
 
 // ================================================================ fila de dados (Blobs -> banco)
@@ -239,7 +414,7 @@ async function loadGroupsCount() {
 }
 
 // ================================================================ roteador
-let routeToken = 0;
+let routeToken = 0, lastRouteKey = '';
 export function parseHash() {
   const h = location.hash.replace(/^#\/?/, '');
   const [path, qs] = h.split('?');
@@ -247,6 +422,23 @@ export function parseHash() {
   return { view: parts[0] || 'overview', arg: parts[1] ? decodeURIComponent(parts[1]) : null, q: new URLSearchParams(qs || '') };
 }
 export function go(hash) { location.hash = hash; }
+
+// pré-carregamento: blocos no formato da página que vai abrir, com brilho passando
+function skeleton(view) {
+  const head = '<div class="sk-head"><i class="sk sk-t"></i><i class="sk sk-p"></i></div>';
+  if (view === 'overview') return `<div class="sk-wrap">${head}<div class="kpis">${'<i class="sk sk-kpi"></i>'.repeat(10)}</div><i class="sk sk-panel"></i></div>`;
+  if (view === 'kpi') return `<div class="sk-wrap">${head}<i class="sk sk-panel" style="height:140px"></i><i class="sk sk-panel"></i></div>`;
+  return `<div class="sk-wrap">${head}<i class="sk sk-panel"></i><i class="sk sk-panel" style="height:180px"></i></div>`;
+}
+function syncThemeColor() {
+  const c = document.documentElement.dataset.theme === 'light' ? '#f4f2e8' : '#0a0a0b';
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', c);
+}
+function hideSplash() {
+  const sp = document.getElementById('splash'); if (!sp || sp.classList.contains('out')) return;
+  sp.classList.add('out'); setTimeout(() => sp.remove(), 600);
+}
+setTimeout(hideSplash, 8000);
 
 async function route() {
   const my = ++routeToken;
@@ -258,7 +450,13 @@ async function route() {
   renderTopbar(view);
   const el = $('#view');
   if (!S.sites.length && view !== 'settings') { go('#/settings'); return; }
-  el.innerHTML = '<div class="loading"><span class="spin"></span></div>';
+  closeKpi();
+  const key = view + '|' + (arg || '') + '|' + JSON.stringify(q || {});
+  const live = key === lastRouteKey && el.children.length && !el.querySelector('.sk-wrap, .err');
+  lastRouteKey = key;
+  const snap = live ? snapView(el) : null;
+  el.classList.toggle('live', !!live);
+  if (live) document.body.classList.add('busy'); else el.innerHTML = skeleton(view);
   const alive = () => my === routeToken;
   try {
     switch (view) {
@@ -273,16 +471,21 @@ async function route() {
       case 'settings': await renderSettings(el, alive, arg); break;
       default: go('#/overview');
     }
+    if (snap && alive()) animateFrom(el, snap);
+    else if (alive()) cinema?.enter(el);
   } catch (e) {
     if (alive()) el.innerHTML = `<div class="err">${esc(e.message)}</div>`;
     console.error(e);
+  } finally {
+    if (alive()) document.body.classList.remove('busy');
   }
 }
 window.addEventListener('hashchange', route);
 
 async function boot() {
   document.documentElement.dataset.theme = store.get('theme', null) || 'dark';
-  if (!S.token) return renderLogin();
+  syncThemeColor();
+  if (!S.token) { renderLogin(); hideSplash(); return; }
   renderShell();
   try {
     const { rows } = await api('sites');
@@ -291,7 +494,8 @@ async function boot() {
     store.set('site', S.siteId);
     await loadGroupsCount();
   } catch (e) { if (!S.token) return; }
-  route();
+  await route();
+  hideSplash();
   if (S.sites.length) syncData();
 }
 export async function reloadSites() {
@@ -384,6 +588,7 @@ function bindChart(el, series, bucket) {
   svg.addEventListener('mouseleave', () => { hov.setAttribute('visibility', 'hidden'); hideTip(); });
 }
 
+const convBadge = (r) => `<span class="badge ${LV.conversion(r.conv)}" title="Conversão">${fmtPct(r.conv, 0)} conv.</span>`;
 const KPI_ICO = ['sessions', 'users', 'eye', 'target', 'clock', 'exit', 'scroll', 'pulse', 'zap', 'bug'];
 const KPI_KEYS = ['sessions', 'visitors', 'pageviews', 'conversion', 'avg_duration', 'bounce', 'scroll', 'activity', 'rage', 'errors'];
 
@@ -402,27 +607,28 @@ async function renderOverview(el, alive) {
     ['Taxa de rejeição', fmtPct(k.bounce), delta(k.bounce, p.bounce, true), 'Sessões de uma página só que não clicaram no link de conversão'],
     ['Scroll médio', k.scroll == null ? '—' : Math.round(k.scroll) + '%', delta(k.scroll, p.scroll)],
     ['Taxa de atividade', fmtPct(k.activity, 0), delta(k.activity, p.activity), 'Parte do tempo na página em que o visitante interagiu (mouse, toque, scroll, teclado)'],
-    ['Sessões com rage click', fmtPct(k.rage), delta(k.rage, p.rage, true), '3 ou mais cliques rápidos no mesmo ponto', k.rage > 0.05],
-    ['Sessões com erro JS', fmtPct(k.errors), delta(k.errors, p.errors, true), null, k.errors > 0.05],
+    ['Sessões com rage click', fmtPct(k.rage), delta(k.rage, p.rage, true), '3 ou mais cliques rápidos no mesmo ponto'],
+    ['Sessões com erro JS', fmtPct(k.errors), delta(k.errors, p.errors, true)],
   ];
+  const lvOf = (i) => (LV[KPI_KEYS[i]] ? LV[KPI_KEYS[i]](KPI_KEYS[i] === 'scroll' ? k.scroll : k[KPI_KEYS[i]]) : '');
   el.innerHTML = `
     <div class="page-head"><div><h1>Visão geral</h1><p>${esc(site().name)}: como as pessoas chegam, quanto ficam e onde travam.</p></div>
       <a class="btn" href="#/sessions?frustration=1">${icon('sessions')} Ver sessões com frustração</a></div>
     ${k.sessions ? '' : `<div class="note" style="margin-bottom:16px">Ainda não chegou nenhuma sessão nesse período. Confira se o script está instalado no site em <a href="#/settings">Sites e instalação</a>.</div>`}
-    <section class="kpis">${K.map(([l, v, dl, help, bad], i) => `<a class="kpi ${bad ? 'bad' : ''}" href="#/kpi/${KPI_KEYS[i]}" ${help ? `title="${esc(help)}"` : ''} aria-label="Detalhar ${esc(l)}"><span class="kpi-ico">${icon(KPI_ICO[i])}</span><div class="kpi-l">${l}</div><div class="kpi-v">${v}${dl}</div></a>`).join('')}</section>
+    <section class="kpis">${K.map(([l, v, dl, help], i) => { const lv = lvOf(i); return `<a class="kpi ${lv ? 'lv-' + lv : ''}" href="#/kpi/${KPI_KEYS[i]}" data-key="${KPI_KEYS[i]}" ${help ? `title="${esc(help)}"` : ''} aria-label="Detalhar ${esc(l)}"><span class="kpi-ico">${icon(KPI_ICO[i])}</span><div class="kpi-l">${lvDot(lv)}${l}</div><div class="kpi-v">${v}${dl}</div></a>`; }).join('')}</section>
     <section class="panel" style="margin-bottom:16px">
       <div class="panel-head"><h2>Sessões ao longo do tempo</h2><div class="legend"><span><i></i>Sessões</span><span><i class="l3"></i>Converteram</span><span><i class="l2"></i>Com frustração ou erro</span></div></div>
       <div class="only-d">${lineChart(d.series, d.bucket)}</div><div class="only-m">${barChart(d.series, d.bucket)}</div>
     </section>
     <div class="grid g3" style="margin-bottom:16px">
-      <section class="panel"><div class="panel-head"><h2>Canais</h2></div>${barList(d.channels, { extra: (r) => `<span class="badge good" title="Conversão">${fmtPct(r.conv, 0)} conv.</span>` })}</section>
-      <section class="panel"><div class="panel-head"><h2>Dispositivos</h2></div>${barList(d.devices.map((x) => ({ ...x, k: devName(x.k) })), { extra: (r) => `<span class="badge good" title="Conversão">${fmtPct(r.conv, 0)} conv.</span>` })}</section>
+      <section class="panel"><div class="panel-head"><h2>Canais</h2></div>${barList(d.channels, { extra: convBadge })}</section>
+      <section class="panel"><div class="panel-head"><h2>Dispositivos</h2></div>${barList(d.devices.map((x) => ({ ...x, k: devName(x.k) })), { extra: convBadge })}</section>
       <section class="panel"><div class="panel-head"><h2>Sites de origem</h2></div>${barList(d.refs)}</section>
     </div>
     <div class="grid g2">
       <section class="panel"><div class="panel-head"><h2>Páginas de entrada</h2><a class="small" href="#/pages">Comparar páginas</a></div>
         <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Página</th><th class="n">Entradas</th><th class="n">Conversão</th><th class="n">Rejeição</th><th class="n">Duração</th></tr></thead>
-        <tbody>${d.landings.map((r) => `<tr class="click" data-page="${esc(r.k)}"><td class="lbl">${esc(r.k)}</td><td class="n">${fmtInt(r.n)}</td><td class="n">${fmtPct(r.conv, 0)}</td><td class="n">${fmtPct(r.bounce, 0)}</td><td class="n">${fmtDur(r.dur)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Sem dados</td></tr>'}</tbody></table></div></section>
+        <tbody>${d.landings.map((r) => `<tr class="click" data-page="${esc(r.k)}"><td class="lbl">${esc(r.k)}</td><td class="n">${fmtInt(r.n)}</td><td class="n"><span class="badge ${LV.conversion(r.conv)}">${fmtPct(r.conv, 0)}</span></td><td class="n"><span class="badge ${LV.bounce(r.bounce)}">${fmtPct(r.bounce, 0)}</span></td><td class="n">${fmtDur(r.dur)}</td></tr>`).join('') || '<tr><td colspan="5" class="muted">Sem dados</td></tr>'}</tbody></table></div></section>
       <section class="panel"><div class="panel-head"><h2>Erros de JavaScript mais frequentes</h2></div>
         ${d.errors.length ? `<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Erro</th><th class="n">Sessões</th><th class="n"></th></tr></thead><tbody>
         ${d.errors.map((r) => `<tr><td><div class="lbl" title="${esc(r.k)}">${esc(r.k)}</div><div class="muted small">${esc(r.path || '')}</div></td><td class="n">${fmtInt(r.sessions)}</td><td class="n"><a class="btn sm" href="#/sessions?errors=1">Ver</a></td></tr>`).join('')}</tbody></table></div>`
@@ -430,8 +636,21 @@ async function renderOverview(el, alive) {
       </section>
     </div>`;
   bindChart(el, d.series, d.bucket); bindBars(el);
+  $$('a.kpi', el).forEach((a) => (a.onclick = (e) => { if (e.metaKey || e.ctrlKey || e.shiftKey) return; e.preventDefault(); openKpi(a.dataset.key); }));
   $$('tr[data-page]', el).forEach((tr) => (tr.onclick = () => go('#/heatmap?page=' + encodeURIComponent(tr.dataset.page))));
 }
+
+// ================================================================ níveis: verde = bom, amarelo = atenção, vermelho = crítico
+const hiBetter = (g, w) => (v) => (v == null || isNaN(v) ? '' : v >= g ? 'good' : v >= w ? 'warn' : 'bad');
+const loBetter = (g, w) => (v) => (v == null || isNaN(v) ? '' : v <= g ? 'good' : v <= w ? 'warn' : 'bad');
+// volume (sessões, visitantes, pageviews) não tem meta fixa: compara cada dia com a média do período
+const relLv = (avg) => (v) => (!v || !avg ? '' : v >= avg * 0.9 ? 'good' : v >= avg * 0.6 ? 'warn' : 'bad');
+const LV = {
+  conversion: hiBetter(0.2, 0.08), avg_duration: hiBetter(60000, 20000), bounce: loBetter(0.5, 0.75),
+  scroll: hiBetter(50, 25), activity: hiBetter(0.6, 0.35), rage: loBetter(0.02, 0.05), errors: loBetter(0.02, 0.05),
+};
+const LV_TXT = { good: 'Bom', warn: 'Atenção', bad: 'Crítico' };
+const lvDot = (l) => (l ? `<i class="lv-dot ${l}" title="${LV_TXT[l]}"></i>` : '');
 
 // ================================================================ detalhe de um indicador (seta ↗ dos cards)
 const pct = (v) => fmtPct(v);
@@ -498,7 +717,7 @@ const KPI_INFO = {
     list: 'errors', link: ['#/sessions?errors=1', 'Ver sessões com erro'] },
 };
 
-async function renderKpi(el, alive, key) {
+async function renderKpi(el, alive, key, inDrawer = false) {
   const info = KPI_INFO[key];
   if (!info) { go('#/overview'); return; }
   const d = await api('overview', baseParams());
@@ -522,21 +741,26 @@ async function renderKpi(el, alive, key) {
       </tbody></table></div></section>`;
   };
   const pts = info.pt ? d.series.map((s) => ({ b: s.b, v: info.pt(s) })) : null;
+  const ptsAvg = pts ? pts.reduce((a, x) => a + (x.v || 0), 0) / Math.max(1, pts.filter((x) => x.v).length) : 0;
+  const lvPt = LV[key] || relLv(ptsAvg);
+  const lvNow = LV[key] ? LV[key](v) : '';
   const trend = () => {
     if (!pts || !pts.length) return '';
     const max = Math.max(1e-9, ...pts.map((x) => x.v || 0));
     const lab = (b) => { const dt = new Date(b); return d.bucket === 'hour' ? dt.getHours() + 'h' : dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); };
     return `<section class="panel" style="margin-bottom:16px"><div class="panel-head"><h2>${esc(t)} ao longo do tempo</h2></div>
-      <div class="kpi-trend">${pts.map((x) => `<div class="kt" title="${lab(x.b)}: ${x.v == null ? '—' : info.fmt(x.v)}"><i style="height:${Math.max(2, ((x.v || 0) / max) * 100)}%"></i><span>${lab(x.b)}</span></div>`).join('')}</div></section>`;
+      <div class="kpi-trend">${pts.map((x) => { const l = lvPt(x.v); return `<div class="kt" title="${lab(x.b)}: ${x.v == null ? '—' : info.fmt(x.v)}${l ? ' · ' + LV_TXT[l] : ''}"><i class="${l}" style="height:${Math.max(2, ((x.v || 0) / max) * 100)}%"></i><span>${lab(x.b)}</span></div>`; }).join('')}</div>
+      <div class="legend" style="margin-top:12px"><span><i class="lg-good"></i>Bom</span><span><i class="lg-warn"></i>Atenção</span><span><i class="lg-bad"></i>Crítico</span>${LV[key] ? '' : '<span>comparado à média do período</span>'}</div></section>`;
   };
-  if ($('#appbar-t')) $('#appbar-t').textContent = t;
+  if (!inDrawer && $('#appbar-t')) $('#appbar-t').textContent = t;
   const prevTxt = pv == null || isNaN(pv) ? 'sem dados do período anterior' : `período anterior: <b>${info.fmt(pv)}</b>`;
   el.innerHTML = `
-    <div class="page-head"><div><a class="small" href="#/overview">← Visão geral</a><h1>${esc(t)}</h1><p>${esc(site().name)}: o que este número significa e como melhorar.</p></div>
-      ${info.link ? `<a class="btn" href="${info.link[0]}">${esc(info.link[1])}</a>` : ''}</div>
-    <section class="kpi-hero panel" style="margin-bottom:16px">
+    ${inDrawer ? '' : `<div class="page-head"><div><a class="small" href="#/overview">← Visão geral</a><h1>${esc(t)}</h1><p>${esc(site().name)}: o que este número significa e como melhorar.</p></div>
+      ${info.link ? `<a class="btn" href="${info.link[0]}">${esc(info.link[1])}</a>` : ''}</div>`}
+    <section class="kpi-hero panel ${lvNow ? 'lv-' + lvNow : ''}" style="margin-bottom:16px">
       <div class="kpi-v">${v == null || isNaN(v) ? '—' : info.fmt(v)} ${delta(v, pv, !!info.invert)}</div>
-      <div class="muted">${prevTxt}</div>
+      <div class="muted">${prevTxt}${lvNow ? ` · <span class="lv-txt ${lvNow}">${lvDot(lvNow)}${LV_TXT[lvNow]}</span>` : ''}</div>
+      ${inDrawer && info.link ? `<a class="btn sm" href="${info.link[0]}">${esc(info.link[1])}</a>` : ''}
     </section>
     ${trend()}
     <div class="grid g3" style="margin-bottom:16px">
